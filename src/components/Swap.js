@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Container } from 'react-bootstrap'
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -10,18 +11,33 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import { ethers } from 'ethers'
 
+import dappIcon from '../dapp-swap.png';
+import appleIcon from '../apple.jpeg';
+
 import Alert from './Alert'
 
 import {
   swap,
-  loadBalances
+  loadProvider,
+  loadBalances,
+  loadBalances1,
+  loadNetwork,
+  loadAccount,
+  loadTokens,
+  loadAMM,
+  loadApple,
+  loadDapp
 } from '../store/interactions'
 
-const Swap = ({ dapp, usd, dappswap, appleswap }) => {
+const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
+
   const [inputToken, setInputToken] = useState(null)
   const [outputToken, setOutputToken] = useState(null)
   const [inputAmount, setInputAmount] = useState(0)
   const [outputAmount, setOutputAmount] = useState(0)
+
+  const [flagDapp, setFlagDapp] = useState(false)
+  const [flagApple, setFlagApple] = useState(false)
 
   const [price, setPrice] = useState(0)
 
@@ -52,23 +68,64 @@ const Swap = ({ dapp, usd, dappswap, appleswap }) => {
       return
     }
 
+    if (e.target.value == 0) {
+      setFlagApple(false)
+      setFlagDapp(false)
+      return
+    }
+
     if (inputToken === 'DAPP') {
       setInputAmount(e.target.value)
 
-      const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await amm.calculateToken1Swap(_token1Amount)
-      const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
+      // const result = await amm.calculateToken1Swap(_token1Amount)
+      const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
 
-      setOutputAmount(_token2Amount.toString())
+      
+
+      if (price1 > price2) {
+        await loadApple(provider, chainId, dispatch)
+        console.log("AppleSwap WINS")
+        const output = _token1Amount * price1
+        setOutputAmount(output)
+        setFlagApple(true)
+        setPrice(price1)
+      } else {
+        await loadDapp(provider, chainId, dispatch)
+        const output = _token1Amount * price2
+        setOutputAmount(output)
+        console.log("DappSwap WINS")
+        setPrice(price2)
+        setFlagDapp(true)
+      }
+
+    
 
     } else {
       setInputAmount(e.target.value)
 
-      const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await amm.calculateToken2Swap(_token2Amount)
-      const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
+      // const result = await amm.calculateToken1Swap(_token1Amount)
+      const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
 
-      setOutputAmount(_token1Amount.toString())
+     // setOutputAmount(_token1Amount.toString())
+    
+      if (price2 > price1) {
+        await loadApple(provider, chainId, dispatch)
+        console.log("AppleSwap WINS")
+        const output = _token1Amount * (1/price1)
+        setOutputAmount(output)
+        setPrice(1/price1)
+        setFlagApple(true)
+      } else {
+        await loadDapp(provider, chainId, dispatch)
+        const output = _token1Amount * (1/price2)
+        setOutputAmount(output)
+        console.log("DappSwap WINS")
+        setPrice(1/price2)
+        setFlagDapp(true)
+      }
+
     }
 
   }
@@ -126,7 +183,7 @@ const Swap = ({ dapp, usd, dappswap, appleswap }) => {
 
             <Row className='my-3'>
               <div className='d-flex justify-content-between'>
-                <Form.Label><strong>Input:</strong></Form.Label>
+                <Form.Label><strong>Input: </strong></Form.Label>
                 <Form.Text muted>
                   Balance: {
                     inputToken === symbols[0] ? (
@@ -194,7 +251,7 @@ const Swap = ({ dapp, usd, dappswap, appleswap }) => {
               )}
 
               <Form.Text muted>
-                Exchange Rate: {price}
+                <p>Exchange Rate: {price}</p>
               </Form.Text>
             </Row>
 
@@ -210,7 +267,33 @@ const Swap = ({ dapp, usd, dappswap, appleswap }) => {
         )}
       </Card>
 
-      
+      {flagDapp && (
+    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: DappSwap
+        <img
+        alt="dappswap"
+        src={dappIcon}
+        width="40"
+        height="40"
+        className="align-right mx-3"
+        />
+    </h5>
+
+      )}
+
+      {flagApple && (
+    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: Appleswap
+        <img
+        alt="appleswap"
+        src={appleIcon}
+        width="40"
+        height="40"
+        className="align-right mx-3"
+        />
+    </h5>
+
+
+      )}
+
       {isSwapping ? (
         <Alert
           message={'Swap Pending...'}

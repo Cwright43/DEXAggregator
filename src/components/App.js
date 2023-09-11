@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import { ethers } from 'ethers'
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
@@ -11,6 +13,7 @@ import appleIcon from '../apple.jpeg';
 import Navigation from './Navigation';
 import Tabs from './Tabs';
 import Swap from './Swap';
+
 // import Deposit from './Deposit';
 // import Withdraw from './Withdraw';
 import Charts from './Charts';
@@ -45,9 +48,16 @@ function App() {
   const [dappAMM, setDappAMM] = useState(null)
   const [appleAMM, setAppleAMM] = useState(null)
 
-  const [usdBalance, setUSDBalance] = useState(null)
-  const [dappBalance, setDappBalance] = useState(null)
-  
+  const [usdBalance, setUSDBalance] = useState(0)
+  const [dappBalance, setDappBalance] = useState(0)
+  const [price1, setPrice1] = useState(0)
+
+  const [usdBalance1, setUSDBalance1] = useState(0)
+  const [dappBalance1, setDappBalance1] = useState(0)
+  const [price2, setPrice2] = useState(0)
+
+  const [isLoading, setIsLoading] = useState(true)
+
   const token1 = useSelector(state => state.amm.token1)
   const token2 = useSelector(state => state.amm.token2)
   const token3 = useSelector(state => state.amm.token3)
@@ -111,6 +121,20 @@ function App() {
     usdBalance = ethers.utils.formatUnits(usdBalance, 18)
     setUSDBalance(usdBalance)
 
+    let price1 = usdBalance / dappBalance
+    setPrice1(price1)
+
+    let dappBalance1 = await dapp.balanceOf(dappswap.address)
+    dappBalance1 = ethers.utils.formatUnits(dappBalance1, 18)
+    setDappBalance1(dappBalance1)
+
+    let usdBalance1 = await usd.balanceOf(dappswap.address)
+    usdBalance1 = ethers.utils.formatUnits(usdBalance1, 18)
+    setUSDBalance1(usdBalance1)
+
+    let price2 = usdBalance1 / dappBalance1
+    setPrice2(price2)
+
     setDappAMM('0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0')
     setAppleAMM('0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9')
 
@@ -132,17 +156,24 @@ function App() {
 
         <hr />
 
+<Col>
         <h6 className='my-4 text-left'>Total DAPP on Aggregator: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h6>
         <h6 className='my-4 text-left'>Total USD on Aggregator: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h6>
-        <h6 className='my-4 text-left text-warning'>K Value on Aggregator: <strong>{parseFloat(token3/10**18).toFixed(2)}</strong></h6>
-
+</Col>
+<Col>
         <h6 className='my-4 text-left text-danger'>Total DAPP on AppleSwap: <strong>{parseFloat(dappBalance).toFixed(2)}</strong> tokens</h6>
         <h6 className='my-4 text-left text-danger'>Total USD on AppleSwap: <strong>{parseFloat(usdBalance).toFixed(2)}</strong> tokens</h6>
-
+        <h6 className='my-4 text-left text-danger'>DAPP/USD price on AppleSwap: <strong>{parseFloat(price1).toFixed(2)}</strong></h6>
+</Col>
+<Col>
+        <h6 className='my-4 text-left text-primary'>Total DAPP on DappSwap: <strong>{parseFloat(dappBalance1).toFixed(2)}</strong> tokens</h6>
+        <h6 className='my-4 text-left text-primary'>Total USD on DappSwap: <strong>{parseFloat(usdBalance1).toFixed(2)}</strong> tokens</h6>
+        <h6 className='my-4 text-left text-primary'>DAPP/USD price on DappSwap: <strong>{parseFloat(price2).toFixed(2)}</strong></h6>
+</Col>
         <Tabs />
 
         <Routes>
-          <Route exact path="/" element={<Swap />} />
+          <Route exact path="/" element={<Swap price1={price1} price2={price2} chainId={chainId}/>} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
 
@@ -174,6 +205,7 @@ function App() {
         Apple Swap: <strong>{appleAMM}</strong></h6>
 
       </HashRouter>
+
     </Container>
   )
 }

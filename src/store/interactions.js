@@ -86,6 +86,16 @@ export const loadApple = async (provider, chainId, dispatch) => {
 
 }
 
+export const loadDapp = async (provider, chainId, dispatch) => {
+
+  const dappswap = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
+
+  dispatch(setContract1(dappswap))
+
+  return dappswap
+
+}
+
 
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES

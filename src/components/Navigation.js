@@ -35,8 +35,8 @@ const Navigation = () => {
       <img
         alt="logo"
         src={logo}
-        width="55"
-        height="40"
+        width="75"
+        height="50"
         className="d-inline-block align-top mx-3"
       />
       <Navbar.Brand href="#"><strong>Turbo Shell Aggregator</strong></Navbar.Brand>

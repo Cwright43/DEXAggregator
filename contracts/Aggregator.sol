@@ -11,6 +11,7 @@ contract Aggregator {
     uint256 public token1Balance;
     uint256 public token2Balance;
     uint256 public K;
+    uint256 public price;
 
     uint256 public totalShares;
     mapping(address => uint256) public shares;
@@ -31,8 +32,6 @@ contract Aggregator {
         token1 = _token1;
         token2 = _token2;
     }
-
-
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
         // Deposit Tokens
@@ -210,6 +209,40 @@ contract Aggregator {
 
         token1.transfer(msg.sender, token1Amount);
         token2.transfer(msg.sender, token2Amount);
+    }
+
+  function calculateToken1Price(uint256 _token1Amount)
+        public
+        view
+        returns (uint256 token2Amount)
+    {
+        uint256 token1After = token1Balance + _token2Amount;
+        uint256 token2After = K / token2After;
+        token1Amount = token1Balance - token1After;
+
+        // Don't let the pool go to 0
+        if (token2Amount == token1Balance) {
+            token2Amount--;
+        }
+
+        require(token1Amount < token1Balance, "swap amount to large");
+    }
+
+  function calculateToken2Price(uint256 _token2Amount)
+        public
+        view
+        returns (uint256 token1Amount)
+    {
+        uint256 token2After = token2Balance + _token2Amount;
+        uint256 token1After = K / token2After;
+        token1Amount = token1Balance - token1After;
+
+        // Don't let the pool go to 0
+        if (token1Amount == token1Balance) {
+            token1Amount--;
+        }
+
+        require(token1Amount < token1Balance, "swap amount to large");
     }
 
 }
