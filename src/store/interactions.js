@@ -24,6 +24,12 @@ import {
   swapsLoaded,
   swapRequest,
   swapSuccess,
+  depositRequest,
+  depositSuccess,
+  depositFail,
+  withdrawRequest,
+  withdrawSuccess,
+  withdrawFail,
   swapFail
 } from './reducers/amm'
 
@@ -74,8 +80,6 @@ export const loadAMM = async (provider, chainId, dispatch) => {
 
 }
 
-  
-
 export const loadApple = async (provider, chainId, dispatch) => {
 
   const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
@@ -122,6 +126,47 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
 
 }
 
+// ------------------------------------------------------------------------------
+// ADD LIQUDITY
+export const addLiquidity = async (provider, amm, tokens, amounts, dispatch) => {
+  try {
+    dispatch(depositRequest())
+
+    const signer = await provider.getSigner()
+
+    let transaction
+
+    transaction = await tokens[0].connect(signer).approve(amm.address, amounts[0])
+    await transaction.wait()
+
+    transaction = await tokens[1].connect(signer).approve(amm.address, amounts[1])
+    await transaction.wait()
+
+    transaction = await amm.connect(signer).addLiquidity(amounts[0], amounts[1])
+    await transaction.wait()
+
+    dispatch(depositSuccess(transaction.hash))
+  } catch (error) {
+    dispatch(depositFail())
+  }
+}
+
+// ------------------------------------------------------------------------------
+// REMOVE LIQUDITY
+export const removeLiquidity = async (provider, amm, shares, dispatch) => {
+  try {
+    dispatch(withdrawRequest())
+
+    const signer = await provider.getSigner()
+
+    let transaction = await amm.connect(signer).removeLiquidity(shares)
+    await transaction.wait()
+
+    dispatch(withdrawSuccess(transaction.hash))
+  } catch (error) {
+    dispatch(withdrawFail())
+  }
+}
 
 // ------------------------------------------------------------------------------
 // SWAP

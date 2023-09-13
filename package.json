@@ -50,6 +50,10 @@
     ]
   },
   "devDependencies": {
+    "@balancer-labs/v2-interfaces": "0.4.0",
+    "@openzeppelin/contracts": "4.9.2",
+    "@uniswap/v2-periphery": "1.1.0-beta.0",
+    "dotenv": "16.0.3",
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "hardhat": "^2.10.1"
   }

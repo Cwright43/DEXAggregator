@@ -7,6 +7,12 @@ const Tabs = () => {
       <LinkContainer to="/">
         <Nav.Link>Swap</Nav.Link>
       </LinkContainer>
+      <LinkContainer to="/deposit">
+        <Nav.Link>Deposit</Nav.Link>
+      </LinkContainer>
+      <LinkContainer to="/withdraw">
+        <Nav.Link>Withdraw</Nav.Link>
+      </LinkContainer>
       <LinkContainer to="/charts">
         <Nav.Link>Charts</Nav.Link>
       </LinkContainer>

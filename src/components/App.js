@@ -13,6 +13,8 @@ import appleIcon from '../apple.jpeg';
 import Navigation from './Navigation';
 import Tabs from './Tabs';
 import Swap from './Swap';
+import Deposit from './Deposit';
+import Withdraw from './Withdraw';
 
 // import Deposit from './Deposit';
 // import Withdraw from './Withdraw';
@@ -174,10 +176,12 @@ function App() {
 
         <Routes>
           <Route exact path="/" element={<Swap price1={price1} price2={price2} chainId={chainId}/>} />
+          <Route path="/deposit" element={<Deposit />} />
+          <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
 
-        <h3 className='my-4 text-center'>Participating Exchanges:</h3>
+        <h3 className='my-4 text-center '>Participating Exchanges:</h3>
  
         <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'>       
 
