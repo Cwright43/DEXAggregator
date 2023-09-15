@@ -74,7 +74,6 @@ function App() {
   const token4 = useSelector(state => state.amm.token4)
   const token5 = useSelector(state => state.amm.token5)
 
-  // const tokenA = useSelector(state => state.appleswap.token1)
   
   const chainId = useSelector(state => state.provider.chainId)
   const account = useSelector(state => state.provider.account)
@@ -155,13 +154,25 @@ function App() {
   }, []);
 
   return(
+
+<div  style={{
+      backgroundImage: `url("https://w0.peakpx.com/wallpaper/404/961/HD-wallpaper-animal-turtle-sea-life-underwater.jpg")`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      width: '100vw',
+      height: '100vh'
+      }}>
     <Container>
+  
 
     <style>{'body { background-color: rgb(20, 240, 120); opacity: 0.9; }'}</style>
 
       <HashRouter>
 
         <Navigation />
+<Row>
+  <Col>
 
     <>
  <p>     
@@ -171,7 +182,7 @@ function App() {
         width="60"
         height="60"
         className="align-right mx-3"
-        />
+        /> Dapp Swap
   </p>
       <Button
         onClick={() => setOpen(!open)}
@@ -180,18 +191,19 @@ function App() {
       >
         Liquidity 
       </Button>
-      <div style={{ minHeight: '100px' }}>
+      <div style={{ minHeight: '100px', textAlign: 'center' }}>
         <Collapse in={open} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '300px' }}>
-            <h6>DAPP Liquidity: {parseFloat(token1).toFixed(2)}</h6>
-            <h6>USD Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            <Card body style={{ width: '200px' }}>
+            <h5>DAPP: {parseFloat(dappBalance1).toFixed(2)}</h5>
+            <h5>USD: {parseFloat(usdBalance1).toFixed(2)}</h5>
             </Card>
           </div>
         </Collapse>
       </div>
     </>
-
+  </Col>
+  <Col>
     <>
  <p>     
       <img
@@ -200,7 +212,7 @@ function App() {
         width="60"
         height="60"
         className="align-right mx-3"
-        />
+        /> AppleSwap
   </p>
       <Button
         onClick={() => setOpen1(!open1)}
@@ -209,31 +221,30 @@ function App() {
       >
         Liquidity 
       </Button>
-      <div style={{ minHeight: '100px' }}>
+      <div style={{ minHeight: '100px', textAlign: 'center' }}>
         <Collapse in={open1} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '300px' }}>
-            <h6>AppleSwap Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            <Card body style={{ width: '200px' }}>
+            <h5>DAPP: {parseFloat(dappBalance).toFixed(2)}</h5>
+            <h5>USD: {parseFloat(usdBalance).toFixed(2)}</h5>
             </Card>
           </div>
         </Collapse>
       </div>
     </>
+  </Col>
+</Row>
 
         <hr />
 
+<Row>
+  <Col><h6 className='my-4 text-left'>Total DAPP on Aggregator: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h6></Col>
+  <Col><h6 className='my-4 text-left'>Total USD on Aggregator: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h6></Col>
+</Row>
 <Col>
-        <h6 className='my-4 text-left'>Total DAPP on Aggregator: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h6>
-        <h6 className='my-4 text-left'>Total USD on Aggregator: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h6>
-</Col>
-<Col>
-        <h6 className='my-4 text-left text-danger'>Total DAPP on AppleSwap: <strong>{parseFloat(dappBalance).toFixed(2)}</strong> tokens</h6>
-        <h6 className='my-4 text-left text-danger'>Total USD on AppleSwap: <strong>{parseFloat(usdBalance).toFixed(2)}</strong> tokens</h6>
         <h6 className='my-4 text-left text-danger'>DAPP/USD price on AppleSwap: <strong>{parseFloat(price1).toFixed(2)}</strong></h6>
 </Col>
 <Col>
-        <h6 className='my-4 text-left text-primary'>Total DAPP on DappSwap: <strong>{parseFloat(dappBalance1).toFixed(2)}</strong> tokens</h6>
-        <h6 className='my-4 text-left text-primary'>Total USD on DappSwap: <strong>{parseFloat(usdBalance1).toFixed(2)}</strong> tokens</h6>
         <h6 className='my-4 text-left text-primary'>DAPP/USD price on DappSwap: <strong>{parseFloat(price2).toFixed(2)}</strong></h6>
 </Col>
         <Tabs />
@@ -275,6 +286,8 @@ function App() {
       </HashRouter>
 
     </Container>
+
+</div>
   )
 }
 
