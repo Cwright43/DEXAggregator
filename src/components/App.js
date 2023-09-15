@@ -3,6 +3,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 import { ethers } from 'ethers'
+
+import Button from 'react-bootstrap/Button' 
+import Card from 'react-bootstrap/Card' 
+import Collapse from 'react-bootstrap/Collapse' 
+
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
@@ -41,6 +46,8 @@ import {
 
 function App() {
 
+  const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
 
   const [dappswap, setDappSwap] = useState(null)
   const [appleswap, setAppleSwap] = useState(null)
@@ -155,6 +162,63 @@ function App() {
       <HashRouter>
 
         <Navigation />
+
+    <>
+ <p>     
+      <img
+        alt="dappswap"
+        src={dappIcon}
+        width="60"
+        height="60"
+        className="align-right mx-3"
+        />
+  </p>
+      <Button
+        onClick={() => setOpen(!open)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open}
+      >
+        Liquidity 
+      </Button>
+      <div style={{ minHeight: '100px' }}>
+        <Collapse in={open} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '300px' }}>
+            <h6>DAPP Liquidity: {parseFloat(token1).toFixed(2)}</h6>
+            <h6>USD Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            </Card>
+          </div>
+        </Collapse>
+      </div>
+    </>
+
+    <>
+ <p>     
+      <img
+        alt="appleswap"
+        src={appleIcon}
+        width="60"
+        height="60"
+        className="align-right mx-3"
+        />
+  </p>
+      <Button
+        onClick={() => setOpen1(!open1)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open1}
+      >
+        Liquidity 
+      </Button>
+      <div style={{ minHeight: '100px' }}>
+        <Collapse in={open1} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '300px' }}>
+            <h6>AppleSwap Liquidity: {parseFloat(token2).toFixed(2)}</h6>
+            </Card>
+          </div>
+        </Collapse>
+      </div>
+    </>
 
         <hr />
 

@@ -41,6 +41,8 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 
   const [price, setPrice] = useState(0)
 
+  const [activeAMM, setActiveAMM] = useState(0)
+
   const [showAlert, setShowAlert] = useState(false)
 
   const provider = useSelector(state => state.provider.connection)
@@ -113,16 +115,16 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
       if (price2 > price1) {
         await loadApple(provider, chainId, dispatch)
         console.log("AppleSwap WINS")
-        const output = _token1Amount * (1/price1)
+        const output = _token1Amount * (1 / price1)
         setOutputAmount(output)
-        setPrice(1/price1)
+        setPrice(1 / price1)
         setFlagApple(true)
       } else {
         await loadDapp(provider, chainId, dispatch)
-        const output = _token1Amount * (1/price2)
+        const output = _token1Amount * (1 / price2)
         setOutputAmount(output)
         console.log("DappSwap WINS")
-        setPrice(1/price2)
+        setPrice(1 / price2)
         setFlagDapp(true)
       }
 
@@ -177,6 +179,32 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 
   return (
     <div>
+      {flagDapp && (
+    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: DappSwap
+        <img
+        alt="dappswap"
+        src={dappIcon}
+        width="40"
+        height="40"
+        className="align-right mx-3"
+        />
+    </h5>
+
+      )}
+
+      {flagApple && (
+    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: Appleswap
+        <img
+        alt="appleswap"
+        src={appleIcon}
+        width="40"
+        height="40"
+        className="align-right mx-3"
+        />
+    </h5>
+
+
+      )}
       <Card style={{ maxWidth: '450px' }} className='mx-auto px-4'>
         {account ? (
           <Form onSubmit={swapHandler} style={{ maxWidth: '450px', margin: '50px auto' }}>
@@ -207,6 +235,7 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
                 >
+                // ChainId truthy condition statement 
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
                 </DropdownButton>
@@ -267,32 +296,7 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
         )}
       </Card>
 
-      {flagDapp && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: DappSwap
-        <img
-        alt="dappswap"
-        src={dappIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
-    </h5>
 
-      )}
-
-      {flagApple && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: Appleswap
-        <img
-        alt="appleswap"
-        src={appleIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
-    </h5>
-
-
-      )}
 
       {isSwapping ? (
         <Alert
@@ -324,3 +328,4 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 }
 
 export default Swap;
+

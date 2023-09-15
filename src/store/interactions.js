@@ -63,8 +63,13 @@ export const loadAccount = async (dispatch) => {
 // ------------------------------------------------------------------------------
 // LOAD CONTRACTS
 export const loadTokens = async (provider, chainId, dispatch) => {
+  
+  // add DAI and USDT addresses
+
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
+
+
 
   dispatch(setContracts([dapp, usd]))
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))

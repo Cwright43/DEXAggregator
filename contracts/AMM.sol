@@ -16,6 +16,8 @@ contract AMM {
     mapping(address => uint256) public shares;
     uint256 constant PRECISION = 10**18;
 
+    // balanceOf
+
     event Swap(
         address user,
         address tokenGive,
