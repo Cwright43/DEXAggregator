@@ -9,10 +9,12 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
+import Collapse from 'react-bootstrap/Collapse';
 import { ethers } from 'ethers'
 
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
+
 
 import Alert from './Alert'
 
@@ -180,26 +182,40 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
   return (
     <div>
       {flagDapp && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: DappSwap
+    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
+    style={{
+        width: '450px',
+        height: '60px',
+        backgroundColor: 'blue',
+        textAlign: 'center' 
+      }}>
+        Routing: DappSwap
         <img
         alt="dappswap"
         src={dappIcon}
         width="40"
         height="40"
-        className="align-right mx-3"
+        className="align-center mx-3"
         />
     </h5>
 
       )}
 
       {flagApple && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: Appleswap
+    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
+    style={{
+        width: '450px',
+        height: '60px',
+        backgroundColor: 'blue',
+        textAlign: 'center' 
+    }}>
+      Routing: Appleswap
         <img
         alt="appleswap"
         src={appleIcon}
         width="40"
         height="40"
-        className="align-right mx-3"
+        className="text-center mx-3"
         />
     </h5>
 

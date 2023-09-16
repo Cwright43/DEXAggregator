@@ -75,6 +75,7 @@ const Charts = () => {
             series={chart ? chart.series : series}
             width="100%"
             height="100%"
+            opacity="100%"
           />
 
           <hr />

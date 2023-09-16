@@ -6,7 +6,8 @@ import { ethers } from 'ethers'
 
 import Button from 'react-bootstrap/Button' 
 import Card from 'react-bootstrap/Card' 
-import Collapse from 'react-bootstrap/Collapse' 
+import Collapse from 'react-bootstrap/Collapse'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -20,6 +21,11 @@ import Tabs from './Tabs';
 import Swap from './Swap';
 import Deposit from './Deposit';
 import Withdraw from './Withdraw';
+
+// Token icons
+import T1Icon from '../T1-Icon.jpg';
+import T2Icon from '../T2-Icon.jpg';
+import TokenPair from '../TokenPair.jpg';
 
 // import Deposit from './Deposit';
 // import Withdraw from './Withdraw';
@@ -166,7 +172,7 @@ function App() {
     <Container>
   
 
-    <style>{'body { background-color: rgb(20, 240, 120); opacity: 0.9; }'}</style>
+    <style>{'body { background-color: rgb(20, 240, 120); opacity: 1; }'}</style>
 
       <HashRouter>
 
@@ -175,29 +181,63 @@ function App() {
   <Col>
 
     <>
- <p>     
+ <h6 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '350px', color: 'white', textAlign: 'center'}}>
       <img
         alt="dappswap"
         src={dappIcon}
         width="60"
         height="60"
-        className="align-right mx-3"
+        className="align-right mx-3 img-fluid hover-overlay"
         /> Dapp Swap
-  </p>
+  </h6>
       <Button
         onClick={() => setOpen(!open)}
         aria-controls="example-collapse-text"
         aria-expanded={open}
       >
-        Liquidity 
+        Dapp / USD 
       </Button>
-      <div style={{ minHeight: '100px', textAlign: 'center' }}>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
         <Collapse in={open} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '200px' }}>
-            <h5>DAPP: {parseFloat(dappBalance1).toFixed(2)}</h5>
-            <h5>USD: {parseFloat(usdBalance1).toFixed(2)}</h5>
+            <Card body style={{ width: '350px', backgroundColor: 'cyan' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h5>
+                          <img
+                alt="dapp/usd-pair"
+                src={TokenPair}
+                width="65"
+                height="35"
+                className="align-right d-block bg-primary mx-3 my-2 img-fluid rounded"
+                />
+          <strong>DAPP / USD: </strong>{parseFloat(price2).toFixed(2)}</h5>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h5 className='my-4'>
+                          <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="35"
+                height="35"
+                className="align-right d-block bg-dark mx-3 my-2 img-fluid rounded-circle"
+                />
+          <strong>DAPP: </strong>{parseFloat(dappBalance1).toFixed(2)} tokens</h5>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h5>
+              <img
+                alt="USDtoken"
+                src={T2Icon}
+                width="35"
+                height="35"
+                className="align-right d-block mx-3 my-2 img-fluid rounded-circle"
+                />
+          <strong>USD: </strong>{parseFloat(usdBalance1).toFixed(2)} tokens</h5>
+            </ListGroup.Item>
+         </ListGroup> 
             </Card>
+         
           </div>
         </Collapse>
       </div>
@@ -205,28 +245,53 @@ function App() {
   </Col>
   <Col>
     <>
- <p>     
+ <h5 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '350px', color: 'white', textAlign: 'center'}}>
       <img
         alt="appleswap"
         src={appleIcon}
         width="60"
         height="60"
-        className="align-right mx-3"
+        className="align-right mx-3 img-fluid hover-overlay rounded-circle"
         /> AppleSwap
-  </p>
+  </h5>
       <Button
         onClick={() => setOpen1(!open1)}
         aria-controls="example-collapse-text"
         aria-expanded={open1}
       >
-        Liquidity 
+        Dapp / USD
       </Button>
-      <div style={{ minHeight: '100px', textAlign: 'center' }}>
+      <div style={{ minHeight: '100px', textAlign: 'left' }}>
         <Collapse in={open1} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '200px' }}>
-            <h5>DAPP: {parseFloat(dappBalance).toFixed(2)}</h5>
-            <h5>USD: {parseFloat(usdBalance).toFixed(2)}</h5>
+            <Card body style={{ width: '350px', backgroundColor: 'cyan' }}>
+          <h5>
+                          <img
+                alt="dapp/usd-pair"
+                src={TokenPair}
+                width="65"
+                height="35"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>DAPP / USD: </strong>{parseFloat(price1).toFixed(2)}</h5>
+          <h5 className='my-4'>
+                          <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="35"
+                height="35"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>DAPP: </strong>{parseFloat(dappBalance).toFixed(2)} tokens</h5>
+          <h5>
+              <img
+                alt="USDtoken"
+                src={T2Icon}
+                width="35"
+                height="35"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>USD: </strong>{parseFloat(usdBalance).toFixed(2)} tokens</h5>
             </Card>
           </div>
         </Collapse>
@@ -238,15 +303,9 @@ function App() {
         <hr />
 
 <Row>
-  <Col><h6 className='my-4 text-left'>Total DAPP on Aggregator: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h6></Col>
-  <Col><h6 className='my-4 text-left'>Total USD on Aggregator: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h6></Col>
+  <Col><h6 className='my-4 text-left text-warning'>Total DAPP on Aggregator: <strong>{parseFloat(token1).toFixed(2)}</strong> tokens</h6></Col>
+  <Col><h6 className='my-4 text-left text-warning'>Total USD on Aggregator: <strong>{parseFloat(token2).toFixed(2)}</strong> tokens</h6></Col>
 </Row>
-<Col>
-        <h6 className='my-4 text-left text-danger'>DAPP/USD price on AppleSwap: <strong>{parseFloat(price1).toFixed(2)}</strong></h6>
-</Col>
-<Col>
-        <h6 className='my-4 text-left text-primary'>DAPP/USD price on DappSwap: <strong>{parseFloat(price2).toFixed(2)}</strong></h6>
-</Col>
         <Tabs />
 
         <Routes>
@@ -256,32 +315,41 @@ function App() {
           <Route path="/charts" element={<Charts />} />
         </Routes>
 
-        <h3 className='my-4 text-center '>Participating Exchanges:</h3>
- 
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'>       
+        <h3 className='my-4 text-center text-warning'>Participating Exchanges:</h3>
 
-        <img
-        alt="dappswap"
-        src={dappIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
+        <div style={{ textAlign: "center" }}>
+ 
+        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white float-end'       
+          style={{ 
+            alignItems: 'center', justifyContent: 'center', 
+            width: '700px', height: '55px', display: 'flex',
+          }}> 
+            <img
+            alt="dappswap"
+            src={dappIcon}
+            width="40"
+            height="40"
+            className="align-center mx-3 img-fluid"
+            />
 
         DApp Swap: <strong>{dappAMM}</strong></h6> 
 
-         
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'>
-
-        <img
-        alt="appleswap"
-        src={appleIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
+        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white float-end'       
+          style={{ 
+            alignItems: 'center', justifyContent: 'center', 
+            width: '700px', height: '55px', display: 'flex'
+          }}> 
+            <img
+            alt="appleswap"
+            src={appleIcon}
+            width="40"
+            height="40"
+            className="align-center mx-3 img-fluid hover-overlay rounded-circle"
+            />
 
         Apple Swap: <strong>{appleAMM}</strong></h6>
+
+        </div>
 
       </HashRouter>
 
