@@ -181,7 +181,7 @@ function App() {
   <Col>
 
     <>
- <h6 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '350px', color: 'white', textAlign: 'center'}}>
+ <h6 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '275px', color: 'white', textAlign: 'center'}}>
       <img
         alt="dappswap"
         src={dappIcon}
@@ -200,40 +200,40 @@ function App() {
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
         <Collapse in={open} dimension="width">
           <div id="example-collapse-text">
-            <Card body style={{ width: '350px', backgroundColor: 'cyan' }}>
+            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
           <ListGroup>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h5>
-                          <img
-                alt="dapp/usd-pair"
-                src={TokenPair}
-                width="65"
-                height="35"
-                className="align-right d-block bg-primary mx-3 my-2 img-fluid rounded"
-                />
-          <strong>DAPP / USD: </strong>{parseFloat(price2).toFixed(2)}</h5>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h5 className='my-4'>
-                          <img
+          <h5 className='my-1'>
+              <img
                 alt="dapptoken"
                 src={T1Icon}
-                width="35"
-                height="35"
-                className="align-right d-block bg-dark mx-3 my-2 img-fluid rounded-circle"
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>DAPP: </strong>{parseFloat(dappBalance1).toFixed(2)} tokens</h5>
+          <strong>{parseFloat(dappBalance1).toFixed(2)} DAPP</strong></h5>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h5>
+          <h5 className='my-1'>
               <img
                 alt="USDtoken"
                 src={T2Icon}
-                width="35"
-                height="35"
-                className="align-right d-block mx-3 my-2 img-fluid rounded-circle"
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>USD: </strong>{parseFloat(usdBalance1).toFixed(2)} tokens</h5>
+          <strong>{parseFloat(usdBalance1).toFixed(2)} USD</strong></h5>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h5 className='my-1'>
+                          <img
+                alt="dapp/usd-pair"
+                src={TokenPair}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(price2).toFixed(2)}</strong></h5>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -245,7 +245,7 @@ function App() {
   </Col>
   <Col>
     <>
- <h5 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '350px', color: 'white', textAlign: 'center'}}>
+ <h5 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '275px', color: 'white', textAlign: 'center'}}>
       <img
         alt="appleswap"
         src={appleIcon}

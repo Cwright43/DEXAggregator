@@ -19,19 +19,19 @@
 
   "1": {
     "dapp": {
-      "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      "address": "0xbFD3c8A956AFB7a9754C951D03C9aDdA7EC5d638"
     },
     "usd": {
-      "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      "address": "0x38F6F2caE52217101D7CA2a5eC040014b4164E6C"
     },
     "amm": {
-      "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+      "address": "0x04d7478fDF318C3C22cECE62Da9D78ff94807D77"
     },
     "dappswap": {
-      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+      "address": "0xc075BC0f734EFE6ceD866324fc2A9DBe1065CBB1"
     },
     "appleswap": {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+      "address": "0x837a41023CF81234f89F956C94D676918b4791c1"
     }
   }
 
