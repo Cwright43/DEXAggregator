@@ -14,6 +14,9 @@ import Row from 'react-bootstrap/Row';
 
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
+import wethIcon from '../WETH.png';
+import daiIcon from '../DAI.png';
+import backgroundimage from '../Background.jpeg';
 
 // Components
 import Navigation from './Navigation';
@@ -183,7 +186,7 @@ function App() {
   return(
 
 <div  style={{
-      backgroundImage: `url("https://w0.peakpx.com/wallpaper/404/961/HD-wallpaper-animal-turtle-sea-life-underwater.jpg")`,
+      backgroundImage: `url(${backgroundimage})`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
@@ -227,7 +230,7 @@ function App() {
           <h6 className='my-1'>
               <img
                 alt="dapptoken"
-                src={T1Icon}
+                src={dappIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid"
