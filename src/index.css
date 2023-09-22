@@ -1,6 +1,6 @@
 .alert {
   max-width: 300px;
-  position: absolute;
+  position: relative;
   bottom: 100px;
   right: 100px;
   padding: 50px;

@@ -181,14 +181,10 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 
   return (
     <div>
+
+    <Row className='mtext-center'>
       {flagDapp && (
-    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
-    style={{
-        width: '450px',
-        height: '60px',
-        backgroundColor: 'blue',
-        textAlign: 'center' 
-      }}>
+    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'>
         Routing: DappSwap
         <img
         alt="dappswap"
@@ -203,24 +199,19 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 
       {flagApple && (
     <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
-    style={{
-        width: '450px',
-        height: '60px',
-        backgroundColor: 'blue',
-        textAlign: 'center' 
-    }}>
+>
       Routing: Appleswap
         <img
         alt="appleswap"
         src={appleIcon}
         width="40"
         height="40"
-        className="text-center mx-3"
+        className="text-center mx-3 rounded-circle"
         />
     </h5>
-
-
       )}
+</Row>
+<Row>
       <Card style={{ maxWidth: '450px' }} className='mx-auto px-4'>
         {account ? (
           <Form onSubmit={swapHandler} style={{ maxWidth: '450px', margin: '50px auto' }}>
@@ -251,7 +242,7 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
                 >
-                // ChainId truthy condition statement 
+
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
                 </DropdownButton>
@@ -338,7 +329,7 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
       ) : (
         <></>
       )}
-
+</Row>
     </div>
   );
 }

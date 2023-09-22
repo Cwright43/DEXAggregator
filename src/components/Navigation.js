@@ -31,7 +31,7 @@ const Navigation = () => {
   }
 
   return (
-    <Navbar className='my-3' expand="lg">
+    <Navbar className='my-3 bg-primary ' expand="lg">
       <img
         alt="logo"
         src={logo}
@@ -39,7 +39,7 @@ const Navigation = () => {
         height="50"
         className="d-inline-block align-top mx-3"
       />
-      <Navbar.Brand href="#"><strong>Turbo Shell Aggregator</strong></Navbar.Brand>
+      <Navbar.Brand href="#" className='text-warning'><strong>Turbo Shell Aggregator</strong></Navbar.Brand>
 
       <Navbar.Toggle aria-controls="nav" />
       <Navbar.Collapse id="nav" className="justify-content-end">
@@ -63,7 +63,7 @@ const Navigation = () => {
           </Form.Select>
 
           {account ? (
-            <Navbar.Text className='d-flex align-items-center'>
+            <Navbar.Text className='d-flex align-items-center text-warning'>
               {account.slice(0, 5) + '...' + account.slice(38, 42)}
               <Blockies
                 seed={account}

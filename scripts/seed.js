@@ -130,7 +130,6 @@ async function main() {
   transaction = await amm.connect(investor2).swapToken2(tokens(1))
   await transaction.wait()
 
-
   /////////////////////////////////////////////////////////////
   // Investor 3 Swaps: Dapp --> USD
   //
