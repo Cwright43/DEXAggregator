@@ -47,6 +47,10 @@ import {
   loadProvider,
   loadBalances,
   loadBalances1,
+  dappDappApple1Loaded,
+  dappDappApple2Loaded,
+  appleDappApple1Loaded,
+  appleDappApple2Loaded,
   loadNetwork,
   loadAccount,
   loadTokens,
@@ -56,10 +60,12 @@ import {
 
 function App() {
 
-  const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
+  const [open4, setOpen4] = useState(false);
+  const [open5, setOpen5] = useState(false);
+  const [open6, setOpen6] = useState(false);
 
   const [dappswap, setDappSwap] = useState(null)
   const [appleswap, setAppleSwap] = useState(null)
@@ -72,22 +78,34 @@ function App() {
   const [appleAMM, setAppleAMM] = useState(null)
   const [dappAppleUSD, setDappAppleUSD] = useState(null)
   const [appleAppleUSD, setAppleAppleUSD] = useState(null)
+  const [dappDappApple, setDappDappApple] = useState(null)
+  const [appleDappApple, setAppleDappApple] = useState(null)
 
-  const [usdBalance, setUSDBalance] = useState(0)
-  const [dappBalance, setDappBalance] = useState(0)
-  const [price1, setPrice1] = useState(0)
 
-  const [usdBalance1, setUSDBalance1] = useState(0)
+  // [1] - (DAPP / USD) pools
   const [dappBalance1, setDappBalance1] = useState(0)
+  const [dappBalance2, setDappBalance2] = useState(0)
+  const [usdBalance1, setUSDBalance1] = useState(0)
+  const [usdBalance2, setUSDBalance2] = useState(0)
+  const [price1, setPrice1] = useState(0)
   const [price2, setPrice2] = useState(0)
+
+  // [2] - (APPL / USD) pools
+  const [appleBalance1, setAppleBalance1] = useState(0)
+  const [appleBalance2, setAppleBalance2] = useState(0)
+  const [usdBalance3, setUSDBalance3] = useState(0)
+  const [usdBalance4, setUSDBalance4] = useState(0)
   const [price3, setPrice3] = useState(0)
   const [price4, setPrice4] = useState(0)
 
-  const [appleBalance, setAppleBalance] = useState(0)
-  const [usdBalance2, setUSDBalance2] = useState(0)
-
-  const [appleBalance1, setAppleBalance1] = useState(0)
-  const [usdBalance3, setUSDBalance3] = useState(0)
+  // [3] - (DAPP / APPL) pools
+  const [dappBalance3, setDappBalance3] = useState(0)
+  const [dappBalance4, setDappBalance4] = useState(0)
+  const [appleBalance3, setAppleBalance3] = useState(0)
+  const [appleBalance4, setAppleBalance4] = useState(0)
+  const [price5, setPrice5] = useState(0)
+  const [price6, setPrice6] = useState(0)
+  
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -98,6 +116,10 @@ function App() {
   const token4 = useSelector(state => state.amm.token4)
   const token5 = useSelector(state => state.amm.token5)
 
+  const dappDappApple1 = useSelector(state => state.amm.dappDappApple1)
+  const dappDappApple2 = useSelector(state => state.amm.dappDappApple2)
+  const appleDappApple1 = useSelector(state => state.amm.appleDappApple1)
+  const appleDappApple2 = useSelector(state => state.amm.appleDappApple2)
   
   const chainId = useSelector(state => state.provider.chainId)
   const account = useSelector(state => state.provider.account)
@@ -142,6 +164,12 @@ function App() {
     const appleAppleUSD = new ethers.Contract(config[1].appleAppleUSD.address, AMM_ABI, provider)
     setAppleAppleUSD(appleAppleUSD)
 
+    const dappDappApple = new ethers.Contract(config[1].dappDappApple.address, AMM_ABI, provider)
+    setDappDappApple(dappDappApple)
+
+    const appleDappApple = new ethers.Contract(config[1].appleDappApple.address, AMM_ABI, provider)
+    setAppleDappApple(appleDappApple)
+
     // Initiate contracts
     let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
     setUSD(usd)
@@ -154,17 +182,6 @@ function App() {
 
     // Retrieve Balances
 
-    let dappBalance = await dapp.balanceOf(appleswap.address)
-    dappBalance = ethers.utils.formatUnits(dappBalance, 18)
-    setDappBalance(dappBalance)
-
-    let usdBalance = await usd.balanceOf(appleswap.address)
-    usdBalance = ethers.utils.formatUnits(usdBalance, 18)
-    setUSDBalance(usdBalance)
-
-    let price1 = usdBalance / dappBalance
-    setPrice1(price1)
-
     let dappBalance1 = await dapp.balanceOf(dappswap.address)
     dappBalance1 = ethers.utils.formatUnits(dappBalance1, 18)
     setDappBalance1(dappBalance1)
@@ -173,33 +190,71 @@ function App() {
     usdBalance1 = ethers.utils.formatUnits(usdBalance1, 18)
     setUSDBalance1(usdBalance1)
 
-    let price2 = usdBalance1 / dappBalance1
-    setPrice2(price2)
+    let price1 = usdBalance1 / dappBalance1
+    setPrice1(price1)
 
-    let appleBalance = await apple.balanceOf(dappAppleUSD.address)
-    appleBalance = ethers.utils.formatUnits(appleBalance, 18)
-    setAppleBalance(appleBalance)
+    let dappBalance2 = await dapp.balanceOf(appleswap.address)
+    dappBalance2 = ethers.utils.formatUnits(dappBalance2, 18)
+    setDappBalance2(dappBalance2)
 
-    let usdBalance2 = await usd.balanceOf(dappAppleUSD.address)
+    let usdBalance2 = await usd.balanceOf(appleswap.address)
     usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
     setUSDBalance2(usdBalance2)
 
-    let price3 = usdBalance2 / appleBalance
-    setPrice3(price3)
+    let price2 = usdBalance2 / dappBalance2
+    setPrice2(price2)
 
-    let appleBalance1 = await apple.balanceOf(appleAppleUSD.address)
+
+  // Load APPL / USD balances
+
+    let appleBalance1 = await apple.balanceOf(dappAppleUSD.address)
     appleBalance1 = ethers.utils.formatUnits(appleBalance1, 18)
     setAppleBalance1(appleBalance1)
 
-    let usdBalance3 = await usd.balanceOf(appleAppleUSD.address)
+    let usdBalance3 = await usd.balanceOf(dappAppleUSD.address)
     usdBalance3 = ethers.utils.formatUnits(usdBalance3, 18)
     setUSDBalance3(usdBalance3)
 
-    let price4 = usdBalance3 / appleBalance1
+    let price3 = usdBalance3 / appleBalance1
+    setPrice3(price3)
+
+    let appleBalance2 = await apple.balanceOf(appleAppleUSD.address)
+    appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
+    setAppleBalance2(appleBalance2)
+
+    let usdBalance4 = await usd.balanceOf(appleAppleUSD.address)
+    usdBalance4 = ethers.utils.formatUnits(usdBalance4, 18)
+    setUSDBalance4(usdBalance4)
+
+    let price4 = usdBalance4 / appleBalance2
     setPrice4(price4)
 
-    setDappAMM('0xcB0f2a13098f8e841e6Adfa5B17Ec00508b27665')
-    setAppleAMM('0x37D31345F164Ab170B19bc35225Abc98Ce30b46A')
+    // Load DAPP / APPL balances
+
+    let dappBalance3 = await dapp.balanceOf(dappDappApple.address)
+    dappBalance3 = ethers.utils.formatUnits(dappBalance3, 18)
+    setDappBalance3(dappBalance3)
+
+    let appleBalance3 = await apple.balanceOf(dappDappApple.address)
+    appleBalance3 = ethers.utils.formatUnits(appleBalance3, 18)
+    setAppleBalance3(appleBalance3)
+
+    let price5 = appleBalance3 / dappBalance3
+    setPrice5(price5)
+
+    let dappBalance4 = await dapp.balanceOf(appleDappApple.address)
+    dappBalance4 = ethers.utils.formatUnits(dappBalance4, 18)
+    setDappBalance4(dappBalance4)
+
+    let appleBalance4 = await apple.balanceOf(appleDappApple.address)
+    appleBalance4 = ethers.utils.formatUnits(appleBalance4, 18)
+    setAppleBalance4(appleBalance4)
+
+    let price6 = appleBalance4 / dappBalance4
+    setPrice6(price6)
+
+    setDappAMM('0x92b0d1Cc77b84973B7041CB9275d41F09840eaDd')
+    setAppleAMM('0x996785Fe937d92EDBF420F3Bf70Acc62ecD6f655')
 
   }
 
@@ -238,17 +293,17 @@ function App() {
         className="align-right mx-3 img-fluid hover-overlay"
         /> Dapp Swap
   </h6>
-
+  <Row>
     <Col>
       <Button
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen1(!open1)}
         aria-controls="example-collapse-text"
-        aria-expanded={open}
+        aria-expanded={open1}
       >
         (1) DAPP / USD 
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open} dimension="width">
+        <Collapse in={open1} dimension="width">
           <div id="example-collapse-text">
             <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
           <ListGroup>
@@ -283,7 +338,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price2).toFixed(2)}</strong></h6>
+          <strong>Rate: {parseFloat(price1).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -314,7 +369,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(appleBalance).toFixed(2)} APPL</strong></h6>
+          <strong>{parseFloat(appleBalance1).toFixed(2)} APPL</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
@@ -325,18 +380,72 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance2).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(usdBalance3).toFixed(2)} USD</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
                           <img
                 alt="appl/usd-pair"
                 src={TokenPair}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(price3).toFixed(2)}</strong></h6>
+            </ListGroup.Item>
+         </ListGroup> 
+            </Card>
+         
+          </div>
+        </Collapse>
+      </div>
+    </Col>
+  </Row>
+    <Col>
+      <Button
+        onClick={() => setOpen3(!open3)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open3}
+      >
+        (3) DAPP / APPL 
+      </Button>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
+        <Collapse in={open3} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          <strong>{parseFloat(dappBalance3).toFixed(2)} DAPP</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="appletoken"
+                src={T3Icon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>Rate: {parseFloat(price3).toFixed(2)}</strong></h6>
+          <strong>{parseFloat(appleBalance3).toFixed(2)} APPL</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapp/apple-pair"
+                src={TokenPair}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(price5).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -359,16 +468,17 @@ function App() {
         className="align-right mx-3 img-fluid hover-overlay"
         /> Apple Swap
   </h6>
+<Row>
     <Col>
       <Button
-        onClick={() => setOpen1(!open1)}
+        onClick={() => setOpen4(!open4)}
         aria-controls="example-collapse-text"
-        aria-expanded={open1}
+        aria-expanded={open4}
       >
         (1) DAPP / USD 
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open1} dimension="width">
+        <Collapse in={open4} dimension="width">
           <div id="example-collapse-text">
             <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
           <ListGroup>
@@ -381,7 +491,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-          <strong>{parseFloat(dappBalance).toFixed(2)} DAPP</strong></h6>
+          <strong>{parseFloat(dappBalance2).toFixed(2)} DAPP</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
@@ -392,7 +502,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(usdBalance2).toFixed(2)} USD</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
@@ -403,7 +513,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price1).toFixed(2)}</strong></h6>
+          <strong>Rate: {parseFloat(price2).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -414,14 +524,14 @@ function App() {
     </Col>
     <Col>
       <Button
-        onClick={() => setOpen3(!open3)}
+        onClick={() => setOpen5(!open5)}
         aria-controls="example-collapse-text"
-        aria-expanded={open3}
+        aria-expanded={open5}
       >
         (2) APPL / USD 
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open3} dimension="width">
+        <Collapse in={open5} dimension="width">
           <div id="example-collapse-text">
             <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
           <ListGroup>
@@ -432,9 +542,9 @@ function App() {
                 src={T3Icon}
                 width="40"
                 height="40"
-                className="align-right mx-3 img-fluid"
+                className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(appleBalance1).toFixed(2)} DAPP</strong></h6>
+          <strong>{parseFloat(appleBalance2).toFixed(2)} APPL</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
@@ -445,7 +555,7 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance3).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(usdBalance4).toFixed(2)} USD</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
@@ -456,7 +566,61 @@ function App() {
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price1).toFixed(2)}</strong></h6>
+          <strong>Rate: {parseFloat(price4).toFixed(2)}</strong></h6>
+            </ListGroup.Item>
+         </ListGroup> 
+            </Card>
+         
+          </div>
+        </Collapse>
+      </div>
+    </Col>
+    </Row>
+    <Col>
+      <Button
+        onClick={() => setOpen6(!open6)}
+        aria-controls="example-collapse-text"
+        aria-expanded={open6}
+      >
+        (3) DAPP / APPL
+      </Button>
+      <div style={{ minHeight: '100px', textAlign: 'left'}}>
+        <Collapse in={open6} dimension="width">
+          <div id="example-collapse-text">
+            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
+          <ListGroup>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+              <img
+                alt="dapptoken"
+                src={T1Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid"
+                />
+          <strong>{parseFloat(dappBalance4).toFixed(2)} DAPP</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+              <img
+                alt="appletoken"
+                src={T3Icon}
+                width="40"
+                height="40"
+                className="align-right mx-3 img-fluid rounded-circle"
+                />
+          <strong>{parseFloat(appleBalance4).toFixed(2)} APPL</strong></h6>
+            </ListGroup.Item>
+            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
+          <h6 className='my-1'>
+                          <img
+                alt="dapp/apple-pair"
+                src={TokenPair}
+                width="70"
+                height="40"
+                className="align-right mx-3 img-fluid rounded"
+                />
+          <strong>Rate: {parseFloat(price6).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -469,11 +633,11 @@ function App() {
   </Col>
 </Row>
 
+<h4 className='text-warning'>DAPP / APPL on Dapp Swap: {dappDappApple1}</h4>
+<h4 className='text-warning'>DAPP / APPL on Apple Swap: {}</h4>
+
         <hr />
 
-<Row>
-
-</Row>
         <Tabs />
 
         <Routes>
@@ -487,7 +651,7 @@ function App() {
 
         <div style={{ textAlign: "center" }}>
  
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white float'       
+        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'       
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex',
@@ -502,7 +666,7 @@ function App() {
 
         DApp Swap: <strong>{dappAMM}</strong></h6> 
 
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white float'       
+        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'       
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex'

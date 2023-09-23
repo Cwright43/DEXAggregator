@@ -57,6 +57,22 @@ export const amm = createSlice({
       state.token4 = action.payload
     },
 
+    dappDappApple1Loaded: (state, action) => {
+      state.dappDappApple1 = action.payload
+    },
+
+    dappDappApple2Loaded: (state, action) => {
+      state.dappDappApple2 = action.payload
+    },
+
+    appleDappApple1Loaded: (state, action) => {
+      state.appleDappApple1 = action.payload
+    },
+
+    appleDappApple2Loaded: (state, action) => {
+      state.appleDappApple2 = action.payload
+    },
+
     swapsLoaded: (state, action) => {
       state.swaps = action.payload
     },
@@ -117,6 +133,10 @@ export const {
   token3Loaded,
   token4Loaded,
   token5Loaded,
+  dappDappApple1Loaded,
+  dappDappApple2Loaded,
+  appleDappApple1Loaded,
+  appleDappApple2Loaded,
   swapsLoaded,
   depositRequest,
   depositSuccess,

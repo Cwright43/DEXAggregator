@@ -21,6 +21,10 @@ import {
   token3Loaded,
   token4Loaded,
   token5Loaded,
+  dappDappApple1Loaded,
+  dappDappApple2Loaded,
+  appleDappApple1Loaded,
+  appleDappApple2Loaded,
   swapsLoaded,
   swapRequest,
   swapSuccess,
@@ -68,8 +72,6 @@ export const loadTokens = async (provider, chainId, dispatch) => {
 
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
-
-
 
   dispatch(setContracts([dapp, usd]))
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
