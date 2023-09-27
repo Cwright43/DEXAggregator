@@ -31,7 +31,7 @@ import {
   loadDapp
 } from '../store/interactions'
 
-const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
+const Swap = ({ price1, price2, chainId, }) => {
 
   const [inputToken, setInputToken] = useState(null)
   const [outputToken, setOutputToken] = useState(null)
@@ -89,16 +89,18 @@ const Swap = ({ price1, price2, chainId, dappicon, apple }) => {
 
       if (price1 > price2) {
         await loadApple(provider, chainId, dispatch)
-        console.log("AppleSwap WINS")
         const output = _token1Amount * price1
         setOutputAmount(output)
-        setFlagApple(true)
+        console.log("AppleSwap WINS")
+        console.log(`GAAAY`)
         setPrice(price1)
+        setFlagApple(true)
       } else {
         await loadDapp(provider, chainId, dispatch)
         const output = _token1Amount * price2
         setOutputAmount(output)
         console.log("DappSwap WINS")
+        console.log(`UBER GAY${amm.address}`)
         setPrice(price2)
         setFlagDapp(true)
       }
