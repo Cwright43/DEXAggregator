@@ -14,17 +14,9 @@ import {
 
 import {
   setContract,
-  setContract1,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
-  token3Loaded,
-  token4Loaded,
-  token5Loaded,
-  dappDappApple1Loaded,
-  dappDappApple2Loaded,
-  appleDappApple1Loaded,
-  appleDappApple2Loaded,
   swapsLoaded,
   swapRequest,
   swapSuccess,
@@ -39,7 +31,6 @@ import {
 
 import TOKEN_ABI from '../abis/Token.json';
 import AMM_ABI from '../abis/AMM.json';
-import AGGREGATOR_ABI from '../abis/Aggregator.json';
 import config from '../config.json';
 
 export const loadProvider = (dispatch) => {
@@ -65,11 +56,8 @@ export const loadAccount = async (dispatch) => {
 }
 
 // ------------------------------------------------------------------------------
-// LOAD CONTRACTS
+// Load Tokens - DAPP, USD, APPL
 export const loadTokens = async (provider, chainId, dispatch) => {
-  
-  // add DAI and USDT addresses
-
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
 
@@ -77,36 +65,72 @@ export const loadTokens = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await usd.symbol()]))
 }
 
+// Load APPL / USD Token Pair
+export const loadAppleUSD = async (provider, chainId, dispatch) => {
+  const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
+  const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
+
+  dispatch(setContracts([apple, usd]))
+  dispatch(setSymbols([await apple.symbol(), await usd.symbol()]))
+}
+
+// Load DAPP / APPL Token Pair
+export const loadDAppApple = async (provider, chainId, dispatch) => {
+  const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
+  const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
+
+  dispatch(setContracts([dapp, apple]))
+  dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
+}
+
+// ------------------------------------------------------------------------------
+// Load Liquidity Pools
 export const loadAMM = async (provider, chainId, dispatch) => {
-
   const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
-
   dispatch(setContract(amm))
-
   return amm
-
 }
 
-export const loadApple = async (provider, chainId, dispatch) => {
+  // Load Dapp Swap (DAPP / USD) Address
+  export const loadDapp = async (provider, chainId, dispatch) => {
+    const dappswap = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
+    dispatch(setContract(dappswap))
+    return dappswap
+  }
 
-  const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+  // Load Dapp Swap (APPL / USD) Address
+  export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
+  }
+  // Load Dapp Swap (DAPP / APPL) Address
+  export const loadDappDappApple = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
+  }
 
-  dispatch(setContract1(appleswap))
+  // Load Apple Swap (DAPP / USD) Address
+  export const loadApple = async (provider, chainId, dispatch) => {
+    const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+    dispatch(setContract(appleswap))
+    return appleswap
+  }
 
-  return appleswap
+  // Load Apple Swap (APPL / USD) Address
+  export const loadAppleAppleUSD = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].appleAppleUSD.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
+  }
 
-}
-
-export const loadDapp = async (provider, chainId, dispatch) => {
-
-  const dappswap = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
-
-  dispatch(setContract1(dappswap))
-
-  return dappswap
-
-}
-
+  // Load Apple Swap (DAPP / APPL) Address
+  export const loadAppleDappApple = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].appleDappApple.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
+  }
 
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES
@@ -127,9 +151,6 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
 
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
-
-  const token3 = await _amm.K()
-  dispatch(token3Loaded(ethers.utils.formatUnits(token3.toString(), 'ether')))
 
 }
 
@@ -206,7 +227,6 @@ export const swap = async (provider, _amm, token, symbol, amount, dispatch) => {
     dispatch(swapFail())
   }
 }
-
 
 // ------------------------------------------------------------------------------
 // LOAD ALL SWAPS

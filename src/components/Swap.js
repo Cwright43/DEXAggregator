@@ -9,12 +9,10 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
-import Collapse from 'react-bootstrap/Collapse';
 import { ethers } from 'ethers'
 
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
-
 
 import Alert from './Alert'
 
@@ -22,7 +20,6 @@ import {
   swap,
   loadProvider,
   loadBalances,
-  loadBalances1,
   loadNetwork,
   loadAccount,
   loadTokens,
@@ -42,8 +39,6 @@ const Swap = ({ price1, price2, chainId, }) => {
   const [flagApple, setFlagApple] = useState(false)
 
   const [price, setPrice] = useState(0)
-
-  const [activeAMM, setActiveAMM] = useState(0)
 
   const [showAlert, setShowAlert] = useState(false)
 
@@ -85,14 +80,11 @@ const Swap = ({ price1, price2, chainId, }) => {
       // const result = await amm.calculateToken1Swap(_token1Amount)
       const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
 
-      
-
       if (price1 > price2) {
         await loadApple(provider, chainId, dispatch)
         const output = _token1Amount * price1
         setOutputAmount(output)
         console.log("AppleSwap WINS")
-        console.log(`GAAAY`)
         setPrice(price1)
         setFlagApple(true)
       } else {
@@ -100,12 +92,9 @@ const Swap = ({ price1, price2, chainId, }) => {
         const output = _token1Amount * price2
         setOutputAmount(output)
         console.log("DappSwap WINS")
-        console.log(`UBER GAY${amm.address}`)
         setPrice(price2)
         setFlagDapp(true)
       }
-
-    
 
     } else {
       setInputAmount(e.target.value)
@@ -131,9 +120,7 @@ const Swap = ({ price1, price2, chainId, }) => {
         setPrice(1 / price2)
         setFlagDapp(true)
       }
-
     }
-
   }
 
   const swapHandler = async (e) => {
@@ -183,7 +170,6 @@ const Swap = ({ price1, price2, chainId, }) => {
 
   return (
     <div>
-
     <Row className='mtext-center'>
       {flagDapp && (
     <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'>
@@ -196,9 +182,7 @@ const Swap = ({ price1, price2, chainId, }) => {
         className="align-center mx-3"
         />
     </h5>
-
       )}
-
       {flagApple && (
     <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
 >
@@ -244,9 +228,9 @@ const Swap = ({ price1, price2, chainId, }) => {
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
                 >
-
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >APPL</Dropdown.Item>
                 </DropdownButton>
               </InputGroup>
             </Row>
@@ -277,6 +261,7 @@ const Swap = ({ price1, price2, chainId, }) => {
                 >
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>APPL</Dropdown.Item>
                 </DropdownButton>
               </InputGroup>
             </Row>
@@ -304,8 +289,6 @@ const Swap = ({ price1, price2, chainId, }) => {
           </p>
         )}
       </Card>
-
-
 
       {isSwapping ? (
         <Alert

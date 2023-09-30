@@ -30,6 +30,8 @@ import T1Icon from '../T1-Icon.png';
 import T2Icon from '../T2-Icon.jpg';
 import T3Icon from '../T3-Icon.jpg';
 import TokenPair from '../TokenPair.jpg';
+import TokenPair2 from '../TokenPair2.png';
+import TokenPair3 from '../TokenPair3.png';
 
 // import Deposit from './Deposit';
 // import Withdraw from './Withdraw';
@@ -45,12 +47,6 @@ import config from '../config.json';
 
 import {
   loadProvider,
-  loadBalances,
-  loadBalances1,
-  dappDappApple1Loaded,
-  dappDappApple2Loaded,
-  appleDappApple1Loaded,
-  appleDappApple2Loaded,
   loadNetwork,
   loadAccount,
   loadTokens,
@@ -67,20 +63,18 @@ function App() {
   const [open5, setOpen5] = useState(false);
   const [open6, setOpen6] = useState(false);
 
-  const [dappswap, setDappSwap] = useState(null)
-  const [appleswap, setAppleSwap] = useState(null)
-
   const [usd, setUSD] = useState(null)
   const [dapp, setDapp] = useState(null)
   const [apple, setApple] = useState(null)
 
-  const [dappAMM, setDappAMM] = useState(null)
-  const [appleAMM, setAppleAMM] = useState(null)
+  const [account, setAccount] = useState(null)
+
+  const [dappswap, setDappSwap] = useState(null)
+  const [appleswap, setAppleSwap] = useState(null)
   const [dappAppleUSD, setDappAppleUSD] = useState(null)
   const [appleAppleUSD, setAppleAppleUSD] = useState(null)
   const [dappDappApple, setDappDappApple] = useState(null)
   const [appleDappApple, setAppleDappApple] = useState(null)
-
 
   // [1] - (DAPP / USD) pools
   const [dappBalance1, setDappBalance1] = useState(0)
@@ -105,28 +99,22 @@ function App() {
   const [appleBalance4, setAppleBalance4] = useState(0)
   const [price5, setPrice5] = useState(0)
   const [price6, setPrice6] = useState(0)
-  
+
+  // Set Balances for DAPP / USD
+    const [balance1, setBalance1] = useState(0)
+    const [balance2, setBalance2] = useState(0)
+
+  // Load Account APPL Balance Individually
+    const [dappAccountBalance, setDappAccountBalance] = useState(0)
+    const [usdAccountBalance, setUSDAccountBalance] = useState(0)
+    const [appleAccountBalance, setAppleAccountBalance] = useState(0)
 
   const [isLoading, setIsLoading] = useState(true)
 
-  const token1 = useSelector(state => state.amm.token1)
-  const token2 = useSelector(state => state.amm.token2)
-  const token3 = useSelector(state => state.amm.token3)
-
-  const token4 = useSelector(state => state.amm.token4)
-  const token5 = useSelector(state => state.amm.token5)
-
-  const dappDappApple1 = useSelector(state => state.amm.dappDappApple1)
-  const dappDappApple2 = useSelector(state => state.amm.dappDappApple2)
-  const appleDappApple1 = useSelector(state => state.amm.appleDappApple1)
-  const appleDappApple2 = useSelector(state => state.amm.appleDappApple2)
-  
-  const chainId = useSelector(state => state.provider.chainId)
-  const account = useSelector(state => state.provider.account)
-  const tokens = useSelector(state => state.tokens.contracts)
+ // const token1 = useSelector(state => state.amm.token1)
+ // const token2 = useSelector(state => state.amm.token2)
 
   const dispatch = useDispatch()
-
 
   const loadBlockchainData = async () => {
 
@@ -135,6 +123,11 @@ function App() {
 
     // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
     const chainId = await loadNetwork(provider, dispatch)
+
+    // Load User Account
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+    const account = ethers.utils.getAddress(accounts[0])
+    setAccount(account)
 
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
@@ -149,9 +142,8 @@ function App() {
     // Initiate contracts - Redux
     await loadTokens(provider, chainId, dispatch)
     await loadAMM(provider, chainId, dispatch)
-    // await loadApple(provider, chainId, dispatch)
 
-    // Initiate contracts - React
+    // Initiate liquidity pool contracts
     const dappswap = new ethers.Contract(config[1].dappswap.address, AMM_ABI, provider)
     setDappSwap(dappswap)
 
@@ -170,7 +162,7 @@ function App() {
     const appleDappApple = new ethers.Contract(config[1].appleDappApple.address, AMM_ABI, provider)
     setAppleDappApple(appleDappApple)
 
-    // Initiate contracts
+    // Initiate Token contracts
     let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
     setUSD(usd)
 
@@ -181,81 +173,89 @@ function App() {
     setApple(apple)
 
     // Retrieve Balances
+      let dappAccountBalance = await dapp.balanceOf(accounts[0])
+      dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
+      setDappAccountBalance(dappAccountBalance)
 
-    let dappBalance1 = await dapp.balanceOf(dappswap.address)
-    dappBalance1 = ethers.utils.formatUnits(dappBalance1, 18)
-    setDappBalance1(dappBalance1)
+      let usdAccountBalance = await usd.balanceOf(accounts[0])
+      usdAccountBalance = ethers.utils.formatUnits(usdAccountBalance, 18)
+      setUSDAccountBalance(usdAccountBalance)
 
-    let usdBalance1 = await usd.balanceOf(dappswap.address)
-    usdBalance1 = ethers.utils.formatUnits(usdBalance1, 18)
-    setUSDBalance1(usdBalance1)
+      let appleAccountBalance = await apple.balanceOf(accounts[0])
+      appleAccountBalance = ethers.utils.formatUnits(appleAccountBalance, 18)
+      setAppleAccountBalance(appleAccountBalance)
 
-    let price1 = usdBalance1 / dappBalance1
-    setPrice1(price1)
+    // (DAPP / USD) - Dapp Swap
+      let dappBalance1 = await dapp.balanceOf(dappswap.address)
+      dappBalance1 = ethers.utils.formatUnits(dappBalance1, 18)
+      setDappBalance1(dappBalance1)
 
-    let dappBalance2 = await dapp.balanceOf(appleswap.address)
-    dappBalance2 = ethers.utils.formatUnits(dappBalance2, 18)
-    setDappBalance2(dappBalance2)
+      let usdBalance1 = await usd.balanceOf(dappswap.address)
+      usdBalance1 = ethers.utils.formatUnits(usdBalance1, 18)
+      setUSDBalance1(usdBalance1)
 
-    let usdBalance2 = await usd.balanceOf(appleswap.address)
-    usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
-    setUSDBalance2(usdBalance2)
+      let price1 = usdBalance1 / dappBalance1
+      setPrice1(price1)
 
-    let price2 = usdBalance2 / dappBalance2
-    setPrice2(price2)
+    // (DAPP / USD) - Apple Swap
+      let dappBalance2 = await dapp.balanceOf(appleswap.address)
+      dappBalance2 = ethers.utils.formatUnits(dappBalance2, 18)
+      setDappBalance2(dappBalance2)
 
+      let usdBalance2 = await usd.balanceOf(appleswap.address)
+      usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
+      setUSDBalance2(usdBalance2)
 
-  // Load APPL / USD balances
+      let price2 = usdBalance2 / dappBalance2
+      setPrice2(price2)
 
-    let appleBalance1 = await apple.balanceOf(dappAppleUSD.address)
-    appleBalance1 = ethers.utils.formatUnits(appleBalance1, 18)
-    setAppleBalance1(appleBalance1)
+  // (APPL / USD) - Dapp Swap
+      let appleBalance1 = await apple.balanceOf(dappAppleUSD.address)
+      appleBalance1 = ethers.utils.formatUnits(appleBalance1, 18)
+      setAppleBalance1(appleBalance1)
 
-    let usdBalance3 = await usd.balanceOf(dappAppleUSD.address)
-    usdBalance3 = ethers.utils.formatUnits(usdBalance3, 18)
-    setUSDBalance3(usdBalance3)
+      let usdBalance3 = await usd.balanceOf(dappAppleUSD.address)
+      usdBalance3 = ethers.utils.formatUnits(usdBalance3, 18)
+      setUSDBalance3(usdBalance3)
 
-    let price3 = usdBalance3 / appleBalance1
-    setPrice3(price3)
+      let price3 = usdBalance3 / appleBalance1
+      setPrice3(price3)
+  
+  // (APPL / USD) - Apple Swap
+      let appleBalance2 = await apple.balanceOf(appleAppleUSD.address)
+      appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
+      setAppleBalance2(appleBalance2)
 
-    let appleBalance2 = await apple.balanceOf(appleAppleUSD.address)
-    appleBalance2 = ethers.utils.formatUnits(appleBalance2, 18)
-    setAppleBalance2(appleBalance2)
+      let usdBalance4 = await usd.balanceOf(appleAppleUSD.address)
+      usdBalance4 = ethers.utils.formatUnits(usdBalance4, 18)
+      setUSDBalance4(usdBalance4)
 
-    let usdBalance4 = await usd.balanceOf(appleAppleUSD.address)
-    usdBalance4 = ethers.utils.formatUnits(usdBalance4, 18)
-    setUSDBalance4(usdBalance4)
+      let price4 = usdBalance4 / appleBalance2
+      setPrice4(price4)
 
-    let price4 = usdBalance4 / appleBalance2
-    setPrice4(price4)
+    // (DAPP / APPL) - Dapp Swap
+      let dappBalance3 = await dapp.balanceOf(dappDappApple.address)
+      dappBalance3 = ethers.utils.formatUnits(dappBalance3, 18)
+      setDappBalance3(dappBalance3)
 
-    // Load DAPP / APPL balances
+      let appleBalance3 = await apple.balanceOf(dappDappApple.address)
+      appleBalance3 = ethers.utils.formatUnits(appleBalance3, 18)
+      setAppleBalance3(appleBalance3)
 
-    let dappBalance3 = await dapp.balanceOf(dappDappApple.address)
-    dappBalance3 = ethers.utils.formatUnits(dappBalance3, 18)
-    setDappBalance3(dappBalance3)
+      let price5 = appleBalance3 / dappBalance3
+      setPrice5(price5)
 
-    let appleBalance3 = await apple.balanceOf(dappDappApple.address)
-    appleBalance3 = ethers.utils.formatUnits(appleBalance3, 18)
-    setAppleBalance3(appleBalance3)
+    // (DAPP / APPL) - Apple Swap
+      let dappBalance4 = await dapp.balanceOf(appleDappApple.address)
+      dappBalance4 = ethers.utils.formatUnits(dappBalance4, 18)
+      setDappBalance4(dappBalance4)
 
-    let price5 = appleBalance3 / dappBalance3
-    setPrice5(price5)
+      let appleBalance4 = await apple.balanceOf(appleDappApple.address)
+      appleBalance4 = ethers.utils.formatUnits(appleBalance4, 18)
+      setAppleBalance4(appleBalance4)
 
-    let dappBalance4 = await dapp.balanceOf(appleDappApple.address)
-    dappBalance4 = ethers.utils.formatUnits(dappBalance4, 18)
-    setDappBalance4(dappBalance4)
-
-    let appleBalance4 = await apple.balanceOf(appleDappApple.address)
-    appleBalance4 = ethers.utils.formatUnits(appleBalance4, 18)
-    setAppleBalance4(appleBalance4)
-
-    let price6 = appleBalance4 / dappBalance4
-    setPrice6(price6)
-
-    setDappAMM('0x92b0d1Cc77b84973B7041CB9275d41F09840eaDd')
-    setAppleAMM('0x996785Fe937d92EDBF420F3Bf70Acc62ecD6f655')
-
+      let price6 = appleBalance4 / dappBalance4
+      setPrice6(price6)
   }
 
   useEffect(() => {
@@ -274,7 +274,6 @@ function App() {
       }}>
     <Container>
   
-
     <style>{'body { background-color: rgb(20, 240, 120); opacity: 1; }'}</style>
 
       <HashRouter>
@@ -386,7 +385,7 @@ function App() {
           <h6 className='my-1'>
                           <img
                 alt="appl/usd-pair"
-                src={TokenPair}
+                src={TokenPair2}
                 width="70"
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
@@ -440,7 +439,7 @@ function App() {
           <h6 className='my-1'>
                           <img
                 alt="dapp/apple-pair"
-                src={TokenPair}
+                src={TokenPair3}
                 width="70"
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
@@ -561,7 +560,7 @@ function App() {
           <h6 className='my-1'>
                           <img
                 alt="dapp/usd-pair"
-                src={TokenPair}
+                src={TokenPair2}
                 width="70"
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
@@ -615,7 +614,7 @@ function App() {
           <h6 className='my-1'>
                           <img
                 alt="dapp/apple-pair"
-                src={TokenPair}
+                src={TokenPair3}
                 width="70"
                 height="40"
                 className="align-right mx-3 img-fluid rounded"
@@ -633,25 +632,23 @@ function App() {
   </Col>
 </Row>
 
-<h4 className='text-warning'>DAPP / APPL on Dapp Swap: {dappDappApple1}</h4>
-<h4 className='text-warning'>DAPP / APPL on Apple Swap: {}</h4>
-
         <hr />
 
         <Tabs />
 
         <Routes>
-          <Route exact path="/" element={<Swap price1={price1} price2={price2} chainId={chainId}/>} />
+          <Route exact path="/" element={<Swap price1={price1} price2={price2} />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
         </Routes>
 
-        <h3 className='my-4 text-center'>Participating Exchanges:</h3>
+        <h1></h1>
+        <h3 className='my-4 text-center text'>Participating Exchanges:</h3>
 
         <div style={{ textAlign: "center" }}>
  
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'       
+        <h5 className='my-4 text-center p-3 mb-2 bg-gradient rounded-5'
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex',
@@ -664,9 +661,9 @@ function App() {
             className="align-center mx-3 img-fluid"
             />
 
-        DApp Swap: <strong>{dappAMM}</strong></h6> 
+        DApp Swap</h5> 
 
-        <h6 className='my-4 text-center p-3 mb-2 bg-danger bg-gradient rounded-5 text-white'       
+        <h5 className='my-4 text-center p-3 mb-2 bg-gradient rounded-5'       
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex'
@@ -679,7 +676,7 @@ function App() {
             className="align-center mx-3 img-fluid hover-overlay rounded-circle"
             />
 
-        Apple Swap: <strong>{appleAMM}</strong></h6>
+        Apple Swap</h5>
 
         </div>
 
