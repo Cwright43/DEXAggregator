@@ -93,9 +93,9 @@ export const loadAMM = async (provider, chainId, dispatch) => {
 
   // Load Dapp Swap (DAPP / USD) Address
   export const loadDapp = async (provider, chainId, dispatch) => {
-    const dappswap = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
-    dispatch(setContract(dappswap))
-    return dappswap
+    const amm = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
   }
 
   // Load Dapp Swap (APPL / USD) Address
@@ -113,9 +113,9 @@ export const loadAMM = async (provider, chainId, dispatch) => {
 
   // Load Apple Swap (DAPP / USD) Address
   export const loadApple = async (provider, chainId, dispatch) => {
-    const appleswap = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
-    dispatch(setContract(appleswap))
-    return appleswap
+    const amm = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+    dispatch(setContract(amm))
+    return amm
   }
 
   // Load Apple Swap (APPL / USD) Address
@@ -199,7 +199,7 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
 // ------------------------------------------------------------------------------
 // SWAP
 
-export const swap = async (provider, _amm, token, symbol, amount, dispatch) => {
+export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
@@ -208,13 +208,13 @@ export const swap = async (provider, _amm, token, symbol, amount, dispatch) => {
 
     const signer = await provider.getSigner()
 
-    transaction = await token.connect(signer).approve(_amm.address, amount)
+    transaction = await token.connect(signer).approve(amm.address, amount)
     await transaction.wait()
 
-    if (symbol === "DAPP") {
-      transaction = await _amm.connect(signer).swapToken1(amount)
-    } else {
-      transaction = await _amm.connect(signer).swapToken2(amount)
+    if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
+      transaction = await amm.connect(signer).swapToken1(amount)
+    } else { 
+      transaction = await amm.connect(signer).swapToken2(amount)
     }
 
     await transaction.wait()

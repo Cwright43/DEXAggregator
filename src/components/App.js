@@ -100,10 +100,6 @@ function App() {
   const [price5, setPrice5] = useState(0)
   const [price6, setPrice6] = useState(0)
 
-  // Set Balances for DAPP / USD
-    const [balance1, setBalance1] = useState(0)
-    const [balance2, setBalance2] = useState(0)
-
   // Load Account APPL Balance Individually
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
@@ -292,6 +288,12 @@ function App() {
         className="align-right mx-3 img-fluid hover-overlay"
         /> Dapp Swap
   </h6>
+  <h6 className='text-white'>Rate 1: {price1}</h6>
+  <h6 className='text-white'>Rate 2: {price2}</h6>
+  <h6 className='text-white'>Rate 3: {price3}</h6>
+  <h6 className='text-white'>Rate 4: {price4}</h6>
+  <h6 className='text-white'>Rate 5: {price5}</h6>
+  <h6 className='text-white'>Rate 6: {price6}</h6>
   <Row>
     <Col>
       <Button
@@ -637,7 +639,17 @@ function App() {
         <Tabs />
 
         <Routes>
-          <Route exact path="/" element={<Swap price1={price1} price2={price2} />} />
+        <Route exact path="/" element={<Swap 
+                                          dappAccountBalance={dappAccountBalance}
+                                          usdAccountBalance={usdAccountBalance}
+                                          appleAccountBalance={appleAccountBalance}
+                                          price1={price1}
+                                          price2={price2}
+                                          price3={price3}
+                                          price4={price4}
+                                          price5={price5}
+                                          price6={price6}
+                                          />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/charts" element={<Charts />} />
