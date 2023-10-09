@@ -83,7 +83,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
     if (inputToken === outputToken) {
-      window.alert('Invalid token pair')
+      window.alert('Invalid Token Pair')
       return
     }
 
@@ -96,6 +96,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
     if (inputToken === 'DAPP' && outputToken === 'USD') {
+          setInputAmount(e.target.value)
           setInputAmount(e.target.value)
           const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
           const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
@@ -230,7 +231,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
     const _inputAmount = ethers.utils.parseUnits(inputAmount, 'ether')
-    // await loadTokens(provider, chainId, dispatch);
+      await loadTokens(provider, chainId, dispatch);
 
     // Swap token depending upon which one we're doing...
     if ((inputToken === 'DAPP' && outputToken === 'USD') 
@@ -242,61 +243,37 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
     await loadBalances(amm, tokens, account, dispatch)
-    await getPrice()
-
     setShowAlert(true)
-
   }
 
-  const getPrice = async () => {
-    if (inputToken === outputToken) {
-      setPrice(0)
-      return
-    }
-
-    if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
-      await loadTokens(provider, chainId, dispatch);
-      await loadBalances(amm, tokens, account, dispatch);
-      if (inputToken === 'DAPP') {
-                  setPrice((token2 / token1))
-                } else {
-                  setPrice((token1 / token2))
-                }
-                console.log(`${price}`)
-              }
-        
-       if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
-        await loadAppleUSD(provider, chainId, dispatch);
-        await loadBalances(amm, tokens, account, dispatch);
-               if (inputToken === 'APPL') {
-                setPrice((token2 / token1))
-              } else {
-                setPrice((token1 / token2))
-              }
-              console.log(`${price}`)
-            }
-        
-       if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
-        await loadDAppApple(provider, chainId, dispatch);
-        await loadBalances(amm, tokens, account, dispatch);
-              if (inputToken === 'DAPP') {
-                setPrice((token2 / token1))
-              } else {
-                setPrice((token1 / token2))
-              }
-              console.log(`${price}`)
-            }
-  }
-
-  const updatePrice = async () => {
+  const updatePrice = async (e) => {
 
     await loadBalances(amm, tokens, account, dispatch)
+
+    setFlagDapp(false)
+    setFlagApple(false)
+
+      if (inputToken === outputToken) {
+      setPrice(0)
+      return}
+
+      if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
+        loadTokens(provider, chainId, dispatch)
+      }
+
+      if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
+        loadAppleUSD(provider, chainId, dispatch)
+      }
+
+      if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
+        loadDAppApple(provider, chainId, dispatch)
+      }
 
   }
 
   useEffect(() => {
     if(inputToken && outputToken) {
-      getPrice()
+      updatePrice();
     }
   }, [inputToken, outputToken]);
 
@@ -355,12 +332,14 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   placeholder="0.0"
                   min="0.0"
                   step="any"
-                  onChange={(e) => inputHandler(e) }
+                  onChange={(e) => inputHandler(e)}
                   disabled={!inputToken}
                 />
                 <DropdownButton
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
+                  step="any"
+                  onChange={() => updatePrice()}
                 >
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
@@ -394,6 +373,8 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 <DropdownButton
                   variant="outline-secondary"
                   title={outputToken ? outputToken : "Select Token"}
+                  step="any"
+                  onClick={(e) => inputHandler(0)}
                 >
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
@@ -466,4 +447,3 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 }
 
 export default Swap;
-

@@ -33,8 +33,6 @@ import TokenPair from '../TokenPair.jpg';
 import TokenPair2 from '../TokenPair2.png';
 import TokenPair3 from '../TokenPair3.png';
 
-// import Deposit from './Deposit';
-// import Withdraw from './Withdraw';
 import Charts from './Charts';
 
 // ABIs: Import your contract ABIs here
@@ -43,7 +41,6 @@ import TOKEN_ABI from '../abis/Token.json'
 
 // Config: Import your network config here
 import config from '../config.json';
-
 
 import {
   loadProvider,
@@ -450,7 +447,6 @@ function App() {
             </ListGroup.Item>
          </ListGroup> 
             </Card>
-         
           </div>
         </Collapse>
       </div>
@@ -625,7 +621,6 @@ function App() {
             </ListGroup.Item>
          </ListGroup> 
             </Card>
-         
           </div>
         </Collapse>
       </div>

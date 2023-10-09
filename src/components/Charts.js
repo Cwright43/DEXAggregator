@@ -22,13 +22,8 @@ const Charts = () => {
 
   const tokens = useSelector(state => state.tokens.contracts)
   const symbols = useSelector(state => state.tokens.symbols)
-
-  const flagDapp = 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-  const flagApple = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
  
-  // const amm = useSelector(state => state.amm.contract)
   const amm = useSelector(state => state.amm.contract)
-  const activeAMM = useSelector(state => state.amm.contract.address)
 
   const chart = useSelector(chartSelector)
 
@@ -43,30 +38,6 @@ const Charts = () => {
   return (
     <div>
 
-        { activeAMM == flagDapp && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: DappSwap
-        <img
-        alt="dappswap"
-        src={dappIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
-    </h5>
-
-      )}
-
-        { activeAMM == flagApple && (
-    <h5 className='d-flex justify-content-center align-items-center my-3'>Routing: Appleswap
-        <img
-        alt="appleswap"
-        src={appleIcon}
-        width="40"
-        height="40"
-        className="align-right mx-3"
-        />
-    </h5>
-      )}
       {provider && amm ? (
         <div>
           <Chart
@@ -77,7 +48,6 @@ const Charts = () => {
             height="100%"
             opacity="100%"
           />
-
           <hr />
 
           <Table striped bordered hover>
@@ -120,22 +90,12 @@ const Charts = () => {
             </tbody>
           </Table>
         </div>
-
       ) : (
         <Loading/>
       )}
-
     </div>
 
   );
 }
 
 export default Charts;
-
-
-
-
-
-
-
-

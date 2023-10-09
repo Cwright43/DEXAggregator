@@ -7,9 +7,9 @@ import {
 } from './reducers/provider'
 
 import {
-  setContracts,
-  setSymbols,
-  balancesLoaded
+  setContracts, 
+  setSymbols, 
+  balancesLoaded,
 } from './reducers/tokens'
 
 import {
@@ -17,15 +17,17 @@ import {
   sharesLoaded,
   token1Loaded,
   token2Loaded,
+  poolDAILoaded,
+  poolWETHLoaded,
   swapsLoaded,
-  swapRequest,
-  swapSuccess,
   depositRequest,
   depositSuccess,
   depositFail,
   withdrawRequest,
   withdrawSuccess,
   withdrawFail,
+  swapRequest,
+  swapSuccess,
   swapFail
 } from './reducers/amm'
 
@@ -56,7 +58,7 @@ export const loadAccount = async (dispatch) => {
 }
 
 // ------------------------------------------------------------------------------
-// Load Tokens - DAPP, USD, APPL
+// Load DAPP / USD Token Pair
 export const loadTokens = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
@@ -83,54 +85,32 @@ export const loadDAppApple = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
 }
 
-// ------------------------------------------------------------------------------
-// Load Liquidity Pools
-  export const loadAMM = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
+  // ------------------------------------------
+  // Load Addresses for Liquidity Pools
 
-  // Load Dapp Swap (DAPP / USD) Address
-  export const loadDapp = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
+  // Load (DAPP / USD) Address
+export const loadAMM = async (provider, chainId, dispatch) => {
+  const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
 
-  // Load Dapp Swap (APPL / USD) Address
+  dispatch(setContract(amm))
+  return amm
+}
+  // Load (APPL / USD) Address
   export const loadDappAppleUSD = async (provider, chainId, dispatch) => {
     const amm = new ethers.Contract(config[chainId].dappAppleUSD.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
-  // Load Dapp Swap (DAPP / APPL) Address
-  export const loadDappDappApple = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
 
-  // Load Apple Swap (DAPP / USD) Address
-  export const loadApple = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
     dispatch(setContract(amm))
     return amm
+  
   }
+  // Load (DAPP / APPL) Address
+export const loadDappDappApple = async (provider, chainId, dispatch) => {
+  const amm = new ethers.Contract(config[chainId].dappDappApple.address, AMM_ABI, provider)
 
-  // Load Apple Swap (APPL / USD) Address
-  export const loadAppleAppleUSD = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].appleAppleUSD.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
+  dispatch(setContract(amm))
+  return amm
 
-  // Load Apple Swap (DAPP / APPL) Address
-  export const loadAppleDappApple = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].appleDappApple.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
+}
 
 // ------------------------------------------------------------------------------
 // LOAD BALANCES & SHARES
@@ -143,7 +123,7 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
     ethers.utils.formatUnits(balance2.toString(), 'ether')
   ]))
 
-  const shares = await _amm.shares(account)
+  const shares = 100 // await amm.shares(account)
   dispatch(sharesLoaded(ethers.utils.formatUnits(shares.toString(), 'ether')))
 
   const token1 = await _amm.token1Balance()
@@ -152,6 +132,11 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
+  const poolDAI = await _amm.poolDAIbalance()
+  dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
+
+  const poolWETH = await _amm.poolWETHbalance()
+  dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 }
 
 // ------------------------------------------------------------------------------
@@ -205,9 +190,8 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
     dispatch(swapRequest())
 
     let transaction
-
     const signer = await provider.getSigner()
-
+    
     transaction = await token.connect(signer).approve(amm.address, amount)
     await transaction.wait()
 
@@ -219,7 +203,7 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
 
     await transaction.wait()
 
-    // Tell redux that the swap has finished - MISSION COMPLETE
+    // Tell redux that the swap has finished
 
     dispatch(swapSuccess(transaction.hash))
 
@@ -231,10 +215,10 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
 // ------------------------------------------------------------------------------
 // LOAD ALL SWAPS
 
-export const loadAllSwaps = async (provider, _amm, dispatch) => {
+export const loadAllSwaps = async (provider, amm, dispatch) => {
   const block = await provider.getBlockNumber()
 
-  const swapStream = await _amm.queryFilter('Swap', 0, block)
+  const swapStream = await amm.queryFilter('Swap', 0, block)
   const swaps = swapStream.map(event => {
     return { hash: event.transactionHash, args: event.args }
   })
