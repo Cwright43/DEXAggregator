@@ -47,8 +47,7 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadAMM,
-  loadApple
+  loadAMM
 } from '../store/interactions'
 
 function App() {
@@ -270,33 +269,27 @@ function App() {
     <style>{'body { background-color: rgb(20, 240, 120); opacity: 1; }'}</style>
 
       <HashRouter>
-
         <Navigation />
 <Row>
   <Col>
 
     <>
- <h6 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '275px', color: 'white', textAlign: 'center'}}>
+ <h6 className='bg-gradient rounded-5 text-white { opacity: 0.1 }' style={{ width: '660px', color: 'white', textAlign: 'center'}}>
       <img
         alt="dappswap"
         src={dappIcon}
         width="60"
         height="60"
-        className="align-right mx-3 img-fluid hover-overlay"
+        className="align-right mx-3 img-fluid hover-overlay text-center"
         /> Dapp Swap
   </h6>
-  <h6 className='text-white'>Rate 1: {price1}</h6>
-  <h6 className='text-white'>Rate 2: {price2}</h6>
-  <h6 className='text-white'>Rate 3: {price3}</h6>
-  <h6 className='text-white'>Rate 4: {price4}</h6>
-  <h6 className='text-white'>Rate 5: {price5}</h6>
-  <h6 className='text-white'>Rate 6: {price6}</h6>
   <Row>
     <Col>
       <Button
         onClick={() => setOpen1(!open1)}
         aria-controls="example-collapse-text"
         aria-expanded={open1}
+        className='my-4'
       >
         (1) DAPP / USD 
       </Button>
@@ -350,6 +343,7 @@ function App() {
         onClick={() => setOpen2(!open2)}
         aria-controls="example-collapse-text"
         aria-expanded={open2}
+        className='my-4'
       >
         (2) APPL / USD 
       </Button>
@@ -456,13 +450,13 @@ function App() {
   <Col>
 
     <>
- <h6 className='bg-danger bg-gradient rounded-5 text-white}}' style={{ width: '275px', color: 'white', textAlign: 'center'}}>
+ <h6 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
       <img
         alt="appleswap"
         src={appleIcon}
         width="60"
         height="60"
-        className="align-right mx-3 img-fluid hover-overlay"
+        className="align-right mx-3 img-fluid hover-overlay rounded-circle"
         /> Apple Swap
   </h6>
 <Row>
@@ -471,6 +465,7 @@ function App() {
         onClick={() => setOpen4(!open4)}
         aria-controls="example-collapse-text"
         aria-expanded={open4}
+        className='my-4'
       >
         (1) DAPP / USD 
       </Button>
@@ -524,6 +519,7 @@ function App() {
         onClick={() => setOpen5(!open5)}
         aria-controls="example-collapse-text"
         aria-expanded={open5}
+        className='my-4'
       >
         (2) APPL / USD 
       </Button>

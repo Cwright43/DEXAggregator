@@ -7,12 +7,6 @@ const Tabs = () => {
       <LinkContainer className='text-warning' to="/">
         <Nav.Link><strong>Swap</strong></Nav.Link>
       </LinkContainer>
-      <LinkContainer className='text-warning' to="/deposit">
-        <Nav.Link><strong>Deposit</strong></Nav.Link>
-      </LinkContainer>
-      <LinkContainer className='text-warning' to="/withdraw">
-        <Nav.Link><strong>Withdraw</strong></Nav.Link>
-      </LinkContainer>
       <LinkContainer className='text-warning' to="/charts">
         <Nav.Link><strong>Charts</strong></Nav.Link>
       </LinkContainer>
