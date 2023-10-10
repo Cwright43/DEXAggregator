@@ -18,14 +18,11 @@ import Alert from './Alert'
 
 import {
   swap,
-  loadProvider,
   loadBalances,
   loadNetwork,
-  loadAccount,
   loadTokens,
   loadAppleUSD,
-  loadDAppApple,
-  loadAMM,
+  loadDappApple,
   loadDapp,
   loadDappAppleUSD,
   loadDappDappApple,
@@ -43,11 +40,13 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   const [outputToken, setOutputToken] = useState(null)
   const [inputAmount, setInputAmount] = useState(0)
   const [outputAmount, setOutputAmount] = useState(0)
+  const [exchangeRate, setExchangeRate] = useState(0)  
 
   const [flagDapp, setFlagDapp] = useState(false)
   const [flagApple, setFlagApple] = useState(false)
 
   const [price, setPrice] = useState(0)
+  const [protocol, setProtocol] = useState(0)
 
   const [showAlert, setShowAlert] = useState(false)
 
@@ -77,6 +76,16 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 }
 
   const inputHandler = async (e) => {
+
+    if (e.target.value == 0) {
+      setPrice(0)
+      setOutputAmount(0)
+      setFlagApple(false)
+      setFlagDapp(false)
+      setExchangeRate(0)
+      return
+    }
+
     if (!inputToken || !outputToken) {
       window.alert('Please select token')
       return
@@ -87,138 +96,23 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       return
     }
 
-    if (e.target.value == 0) {
-      setFlagApple(false)
-      setFlagDapp(false)
-      setPrice(0)
-      setOutputAmount(0)
-      return
-    }
-
-    if (inputToken === 'DAPP' && outputToken === 'USD') {
-          setInputAmount(e.target.value)
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price2 > price1) {
-            await loadApple(provider, chainId, dispatch)
-            const output = _token1Amount * price2
-            setOutputAmount(output)
-            console.log("AppleSwap WINS")
-            setPrice(price2)
-            setFlagApple(true)
-          } else {
-            await loadDapp(provider, chainId, dispatch)
-            const output = _token1Amount * price1
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(price1)
-            setFlagDapp(true)
-          }
-
-        } else if (inputToken === 'USD' && outputToken === 'DAPP') {
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price1 > price2) {
-            await loadApple(provider, chainId, dispatch)
-            console.log("AppleSwap WINS")
-            const output = _token1Amount * (1 / price2)
-            setOutputAmount(output)
-            setPrice(1 / price2)
-            setFlagApple(true)
-          } else {
-            await loadDapp(provider, chainId, dispatch)
-            const output = _token1Amount * (1 / price1)
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(1 / price1)
-            setFlagDapp(true)
-          }
-        }
-
-    if (inputToken === 'APPL' && outputToken === 'USD') {
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price4 > price3) {
-            await loadAppleAppleUSD(provider, chainId, dispatch)
-            const output = _token1Amount * price4
-            setOutputAmount(output)
-            console.log("AppleSwap WINS")
-            setPrice(price4)
-            setFlagApple(true)
-          } else {
-            await loadDappAppleUSD(provider, chainId, dispatch)
-            const output = _token1Amount * price3
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(price3)
-            setFlagDapp(true)
-          }
-  
-        } else if (inputToken === 'USD' && outputToken === 'APPL') {
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price3 > price4) {
-            await loadAppleAppleUSD(provider, chainId, dispatch)
-            console.log("AppleSwap WINS")
-            const output = _token1Amount * (1 / price4)
-            setOutputAmount(output)
-            setPrice(1 / price4)
-            setFlagApple(true)
-          } else {
-            await loadDappAppleUSD(provider, chainId, dispatch)
-            const output = _token1Amount * (1 / price3)
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(1 / price3)
-            setFlagDapp(true)
-          }
-        }
-
-    if (inputToken === 'DAPP' && outputToken === 'APPL') {
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price6 > price5) {
-            await loadAppleDappApple(provider, chainId, dispatch)
-            const output = _token1Amount * price6
-            setOutputAmount(output)
-            console.log("AppleSwap WINS")
-            setPrice(price6)
-            setFlagApple(true)
-          } else {
-            await loadDappDappApple(provider, chainId, dispatch)
-            const output = _token1Amount * price5
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(price5)
-            setFlagDapp(true)
-          }
-  
-        } else if (inputToken === 'APPL' && outputToken === 'DAPP') {
-          setInputAmount(e.target.value)
-          const _token1AmountA = ethers.utils.parseUnits(e.target.value, 'ether')
-          const _token1Amount = ethers.utils.formatUnits(_token1AmountA.toString(), 'ether')
-          if (price5 > price6) {
-            await loadAppleDappApple(provider, chainId, dispatch)
-            console.log("AppleSwap WINS")
-            const output = _token1Amount * (1 / price6)
-            setOutputAmount(output)
-            setPrice(1 / price6)
-            setFlagApple(true)
-          } else {
-            await loadDappDappApple(provider, chainId, dispatch)
-            const output = _token1Amount * (1 / price5)
-            setOutputAmount(output)
-            console.log("DappSwap WINS")
-            setPrice(1 / price5)
-            setFlagDapp(true)
-          }
-        }
+    if (protocol === 1) {
+      setInputAmount(e.target.value)
+      const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
+      const result = await amm.calculateToken1Swap(_token1Amount)
+      const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      setOutputAmount(_token2Amount.toString())
+      setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+    } else if (protocol === 2) {
+      setInputAmount(e.target.value)
+      const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
+      const result = await amm.calculateToken2Swap(_token2Amount)
+      const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      setOutputAmount(_token1Amount.toString())
+      setExchangeRate((_token1Amount/_token2Amount) * 10e17)
       }
+
+   }
 
   const swapHandler = async (e) => {
     e.preventDefault()
@@ -243,37 +137,121 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
     await loadBalances(amm, tokens, account, dispatch)
+    await getPrice()
+
     setShowAlert(true)
   }
 
-  const updatePrice = async (e) => {
+  const getPrice = async () => {
 
-    await loadBalances(amm, tokens, account, dispatch)
-
-    setFlagDapp(false)
-    setFlagApple(false)
-
-      if (inputToken === outputToken) {
+    if (inputToken === outputToken) {
       setPrice(0)
-      return}
+      return
+    }
 
-      if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
-        loadTokens(provider, chainId, dispatch)
-      }
+    if (inputToken === outputToken) {
+      window.alert('Invalid token pair')
+      return
+    }
 
-      if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
-        loadAppleUSD(provider, chainId, dispatch)
-      }
+    if ((inputToken === 'DAPP' && outputToken === 'USD') ||
+    (inputToken === 'APPL' && outputToken === 'USD') ||
+      (inputToken === 'DAPP' && outputToken === 'APPL'))
+          {
+          setProtocol(1)
+              } else {
+          setProtocol(2)
+              }
 
-      if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
-        loadDAppApple(provider, chainId, dispatch)
-      }
+  // Fetch Chain ID for Active Network
+  const chainId = await loadNetwork(provider, dispatch)
 
+  if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
+      await loadTokens(provider, chainId, dispatch);
+  } else if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
+      await loadAppleUSD(provider, chainId, dispatch);
+  } else if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
+      await loadDappApple(provider, chainId, dispatch);
   }
+
+  if (inputToken === 'DAPP' && outputToken === 'USD') {
+        if (price2 > price1) {
+          await loadApple(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDapp(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+  } else if (inputToken === 'USD' && outputToken === 'DAPP') {
+        if (price1 > price2) {
+          await loadApple(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDapp(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+     }
+   
+  if (inputToken === 'APPL' && outputToken === 'USD') {
+        if (price4 > price3) {
+          await loadAppleAppleUSD(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDappAppleUSD(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+      } else if (inputToken === 'USD' && outputToken === 'APPL') {
+        if (price3 > price4) {
+          await loadAppleAppleUSD(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDappAppleUSD(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+      }
+
+  if (inputToken === 'DAPP' && outputToken === 'APPL') {
+        if (price6 > price5) {
+          await loadAppleDappApple(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDappDappApple(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+      } else if (inputToken === 'APPL' && outputToken === 'DAPP') {
+        if (price5 > price6) {
+          await loadAppleDappApple(provider, chainId, dispatch)
+          console.log("AppleSwap WINS")
+          setFlagApple(true)
+        } else {
+          await loadDappDappApple(provider, chainId, dispatch)
+          console.log("DappSwap WINS")
+          setFlagDapp(true)
+        }
+      }
+
+    if (protocol === 1) {
+      setPrice((token2 / token1))
+    } else if (protocol === 2) {
+      setPrice((token1 / token2))
+    }
+
+   await loadBalances(amm, tokens, account, dispatch);
+}
 
   useEffect(() => {
     if(inputToken && outputToken) {
-      updatePrice();
+      getPrice();
     }
   }, [inputToken, outputToken]);
 
@@ -339,7 +317,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   variant="outline-secondary"
                   title={inputToken ? inputToken : "Select Token"}
                   step="any"
-                  onChange={() => updatePrice()}
                 >
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
@@ -347,7 +324,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 </DropdownButton>
               </InputGroup>
             </Row>
-
             <Row className='my-4'>
               <div className='d-flex justify-content-between'>
                 <Form.Label><strong>Output:</strong></Form.Label>
@@ -374,7 +350,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   variant="outline-secondary"
                   title={outputToken ? outputToken : "Select Token"}
                   step="any"
-                  onClick={(e) => inputHandler(0)}
                 >
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
@@ -382,7 +357,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 </DropdownButton>
               </InputGroup>
             </Row>
-
             <Row className='my-3'>
               {isSwapping ? (
                 <Spinner animation="border" style={{ display: 'block', margin: '0 auto' }} />
@@ -391,12 +365,10 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
               )}
 
               <Form.Text muted>
-                <p>Exchange Rate: {price}</p>
+                <p>Exchange Rate: {exchangeRate}</p>
               </Form.Text>
             </Row>
-
           </Form>
-
         ) : (
           <p
             className='d-flex justify-content-center align-items-center'
@@ -406,7 +378,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
           </p>
         )}
       </Card>
-
       <p>
                 <Button 
                   variant="primary" 
@@ -416,7 +387,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   Show T1 / T2 Account Balances 
                 </Button>
               </p>
-
       {isSwapping ? (
         <Alert
           message={'Swap Pending...'}

@@ -75,7 +75,7 @@ export const loadAppleUSD = async (provider, chainId, dispatch) => {
 }
 
 // Load DAPP / APPL Token Pair
-export const loadDAppApple = async (provider, chainId, dispatch) => {
+export const loadDappApple = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const apple = new ethers.Contract(config[chainId].apple.address, TOKEN_ABI, provider)
 
