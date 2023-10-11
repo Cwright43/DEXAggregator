@@ -80,8 +80,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     if (e.target.value == 0) {
       setPrice(0)
       setOutputAmount(0)
-      setFlagApple(false)
-      setFlagDapp(false)
       setExchangeRate(0)
       return
     }
@@ -143,6 +141,9 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   }
 
   const getPrice = async () => {
+
+    setFlagApple(false)
+    setFlagDapp(false)
 
     if (inputToken === outputToken) {
       setPrice(0)
@@ -363,7 +364,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
               ): (
                 <Button type='submit'>Swap</Button>
               )}
-
               <Form.Text muted>
                 <p>Exchange Rate: {exchangeRate}</p>
               </Form.Text>
