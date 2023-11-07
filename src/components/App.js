@@ -96,15 +96,16 @@ function App() {
   const [price5, setPrice5] = useState(0)
   const [price6, setPrice6] = useState(0)
 
+  // Load DAI/WETH Balances from Mainnet
+  const poolDAI = useSelector(state => state.amm.poolDAI)
+  const poolWETH = useSelector(state => state.amm.poolWETH)
+
   // Load Account APPL Balance Individually
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
 
   const [isLoading, setIsLoading] = useState(true)
-
- // const token1 = useSelector(state => state.amm.token1)
- // const token2 = useSelector(state => state.amm.token2)
 
   const dispatch = useDispatch()
 
@@ -270,6 +271,8 @@ function App() {
 
       <HashRouter>
         <Navigation />
+  <h4 className="text-center text-white">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
+  <h4 className="text-center text-white">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
 <Row>
   <Col>
 

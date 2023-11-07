@@ -14,9 +14,10 @@ import {
 
 import {
   setContract,
-  sharesLoaded,
   token1Loaded,
   token2Loaded,
+  poolDAILoaded,
+  poolWETHLoaded,
   swapsLoaded,
   swapRequest,
   swapSuccess,
@@ -143,14 +144,17 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
     ethers.utils.formatUnits(balance2.toString(), 'ether')
   ]))
 
-  const shares = await _amm.shares(account)
-  dispatch(sharesLoaded(ethers.utils.formatUnits(shares.toString(), 'ether')))
-
   const token1 = await _amm.token1Balance()
   dispatch(token1Loaded(ethers.utils.formatUnits(token1.toString(), 'ether')))
 
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
+
+  const poolDAI = await _amm.poolDAIbalance()
+  dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
+
+  const poolWETH = await _amm.poolWETHbalance()
+  dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 
 }
 

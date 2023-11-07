@@ -38,6 +38,10 @@ async function main() {
   const usd = await ethers.getContractAt('Token', config[chainId].usd.address)
   console.log(`USD Token fetched: ${usd.address}\n`)
 
+  // Fetch Apple Token
+  const apple = await ethers.getContractAt('Token', config[chainId].apple.address)
+  console.log(`Apple Token fetched: ${apple.address}\n`)
+
 
   /////////////////////////////////////////////////////////////
   // Distribute Tokens to Investors
@@ -67,18 +71,56 @@ async function main() {
   //
 
   let amount = tokens(100)
+  let amount1 = tokens(200)
+  let amount2 = tokens(300)
+  let amount3 = tokens(400)
+  let amount4 = tokens(500)
+  let amount5 = tokens(600)
 
   console.log(`Fetching AppleSwap...\n`)
 
   // Fetch AMM
-  const amm = await ethers.getContractAt('AMM', config[chainId].amm.address)
+  const amm = await ethers.getContractAt('AMM', config[chainId].dappswap.address)
   console.log(`AMM Swap fetched: ${amm.address}\n`)
 
   // Fetch AppleSwap
-  const amm2 = await ethers.getContractAt('AMM', config[chainId].amm2.address)
-  console.log(`AppleSwap fetched: ${amm2.address}\n`)
+  const appleswap = await ethers.getContractAt('AMM', config[chainId].appleswap.address)
+  console.log(`AppleSwap fetched: ${appleswap.address}\n`)
 
-  // Add liquidity to AMM Swap
+  // Fetch Aggregator
+  const aggregator = await ethers.getContractAt('AMM', config[chainId].amm.address)
+  console.log(`Aggregator fetched: ${aggregator.address}\n`)
+
+  // Fetch APPL / USD Pool on Dapp Swap
+  const dappAppleUSD = await ethers.getContractAt('AMM', config[chainId].dappAppleUSD.address)
+  console.log(`APPL / USD Pool on Dapp Swap fetched: ${dappAppleUSD.address}\n`)
+
+  // Fetch APPL / USD Pool on Apple Swap
+  const appleAppleUSD = await ethers.getContractAt('AMM', config[chainId].appleAppleUSD.address)
+  console.log(`APPL / USD Pool on Apple Swap fetched: ${appleAppleUSD.address}\n`)
+
+  // Fetch DAPP / APPLE Pool on Dapp Swap
+  const dappDappApple = await ethers.getContractAt('AMM', config[chainId].dappDappApple.address)
+  console.log(`DAPP / APPL Pool on Dapp Swap fetched: ${dappDappApple.address}\n`)
+
+  // Fetch DAPP / APPLE Pool on Apple Swap
+  const appleDappApple = await ethers.getContractAt('AMM', config[chainId].appleDappApple.address)
+  console.log(`DAPP / APPL Pool on Apple Swap fetched: ${appleDappApple.address}\n`)
+
+  // Add liquidity to Aggregator
+
+  transaction = await dapp.connect(deployer).approve(aggregator.address, amount1)
+  await transaction.wait()
+
+  transaction = await usd.connect(deployer).approve(aggregator.address, amount1)
+  await transaction.wait()
+
+  console.log(`Adding liquidity...\n`)
+  transaction = await aggregator.connect(deployer).addLiquidity(amount1, amount1)
+  await transaction.wait()
+
+
+  // Add liquidity to DAPP / USD on Dapp Swap
 
   transaction = await dapp.connect(deployer).approve(amm.address, amount)
   await transaction.wait()
@@ -90,18 +132,90 @@ async function main() {
   transaction = await amm.connect(deployer).addLiquidity(amount, amount)
   await transaction.wait()
 
-  // Add liquidity to AppleSwap
+  // Add liquidity to DAPP / USD on Apple Swap
 
-  transaction = await dapp.connect(deployer).approve(amm2.address, amount)
+  transaction = await dapp.connect(deployer).approve(appleswap.address, amount1)
   await transaction.wait()
 
-  transaction = await usd.connect(deployer).approve(amm2.address, amount)
+  transaction = await usd.connect(deployer).approve(appleswap.address, amount1)
   await transaction.wait()
 
   console.log(`Adding liquidity...\n`)
-  transaction = await amm2.connect(deployer).addLiquidity(amount, amount)
+  transaction = await appleswap.connect(deployer).addLiquidity(amount1, amount1)
   await transaction.wait()
 
+   // Add liquidity to APPL / USD on Dapp Swap
+
+  transaction = await apple.connect(deployer).approve(dappAppleUSD.address, amount2)
+  await transaction.wait()
+
+  transaction = await usd.connect(deployer).approve(dappAppleUSD.address, amount5)
+  await transaction.wait()
+
+  console.log(`Adding liquidity...\n`)
+  transaction = await dappAppleUSD.connect(deployer).addLiquidity(amount2, amount5)
+  await transaction.wait()
+
+   // Add liquidity to APPL / USD on Apple Swap
+
+   transaction = await apple.connect(deployer).approve(appleAppleUSD.address, amount3)
+   await transaction.wait()
+ 
+   transaction = await usd.connect(deployer).approve(appleAppleUSD.address, amount3)
+   await transaction.wait()
+ 
+   console.log(`Adding liquidity...\n`)
+   transaction = await appleAppleUSD.connect(deployer).addLiquidity(amount3, amount3)
+   await transaction.wait()
+
+   // Add liquidity to DAPP / APPL on Dapp Swap
+
+   transaction = await dapp.connect(deployer).approve(dappDappApple.address, amount4)
+   await transaction.wait()
+ 
+   transaction = await apple.connect(deployer).approve(dappDappApple.address, amount4)
+   await transaction.wait()
+ 
+   console.log(`Adding liquidity...\n`)
+   transaction = await dappDappApple.connect(deployer).addLiquidity(amount4, amount4)
+   await transaction.wait()
+ 
+    // Add liquidity to DAPP / APPL on Apple Swap
+ 
+    transaction = await dapp.connect(deployer).approve(appleDappApple.address, amount5)
+    await transaction.wait()
+  
+    transaction = await apple.connect(deployer).approve(appleDappApple.address, amount5)
+    await transaction.wait()
+  
+    console.log(`Adding liquidity...\n`)
+    transaction = await appleDappApple.connect(deployer).addLiquidity(amount5, amount5)
+    await transaction.wait()
+
+  // Add DEX addresses to mapping list
+
+  transaction = await aggregator.addDEXList(amm.address)
+  await transaction.wait()
+
+  console.log(`DappSwap @ ${amm.address} added to DEX mapping...\n`)
+
+  transaction = await aggregator.addDEXList(appleswap.address)
+  await transaction.wait()
+
+  console.log(`AppleSwap @ ${appleswap.address} added to DEX mapping...\n`)
+
+
+  // Add DEX addresses to mapping list
+
+  transaction = await amm.addDEXList(amm.address)
+  await transaction.wait()
+
+  console.log(`DappSwap @ ${amm.address} added to DEX mapping...\n`)
+
+  transaction = await amm.addDEXList(appleswap.address)
+  await transaction.wait()
+
+  console.log(`AppleSwap @ ${appleswap.address} added to DEX mapping...\n`)
 
   /////////////////////////////////////////////////////////////
   // Investor 1 Swaps: Dapp --> USD
@@ -129,6 +243,7 @@ async function main() {
   // Investor swaps 1 token
   transaction = await amm.connect(investor2).swapToken2(tokens(1))
   await transaction.wait()
+
 
   /////////////////////////////////////////////////////////////
   // Investor 3 Swaps: Dapp --> USD

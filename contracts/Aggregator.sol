@@ -8,14 +8,20 @@ contract Aggregator {
     Token public token1;
     Token public token2;
 
+    // uint256 public dexToken1Balance;
+    // uint256 public dexToken2Balance;
+
     uint256 public token1Balance;
     uint256 public token2Balance;
     uint256 public K;
-    uint256 public price;
+
+    uint256 public listCount;
 
     uint256 public totalShares;
     mapping(address => uint256) public shares;
     uint256 constant PRECISION = 10**18;
+
+    mapping(uint256 => address) public dexlist;
 
     event Swap(
         address user,
@@ -31,7 +37,24 @@ contract Aggregator {
     constructor(Token _token1, Token _token2) {
         token1 = _token1;
         token2 = _token2;
+        listCount = 1;
     }
+
+    function addDEXList(address _newDEX) public {
+        dexlist[listCount] = _newDEX;
+        listCount++;
+    }
+
+    function fetchT1Balance(uint256 _dexListing) public view returns (uint256 dexToken1Balance) {
+
+        dexToken1Balance = token1.balanceOf(dexlist[_dexListing]);
+    }
+
+    function fetchT2Balance(uint256 _dexListing) public view returns (uint256 dexToken2Balance) {
+
+        dexToken2Balance = token2.balanceOf(dexlist[_dexListing]);
+    }
+
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
         // Deposit Tokens
@@ -167,7 +190,6 @@ contract Aggregator {
         emit Swap(
             msg.sender,
             address(token2),
-
             _token2Amount,
             address(token1),
             token1Amount,
@@ -209,40 +231,6 @@ contract Aggregator {
 
         token1.transfer(msg.sender, token1Amount);
         token2.transfer(msg.sender, token2Amount);
-    }
-
-  function calculateToken1Price(uint256 _token1Amount)
-        public
-        view
-        returns (uint256 token2Amount)
-    {
-        uint256 token1After = token1Balance + _token2Amount;
-        uint256 token2After = K / token2After;
-        token1Amount = token1Balance - token1After;
-
-        // Don't let the pool go to 0
-        if (token2Amount == token1Balance) {
-            token2Amount--;
-        }
-
-        require(token1Amount < token1Balance, "swap amount to large");
-    }
-
-  function calculateToken2Price(uint256 _token2Amount)
-        public
-        view
-        returns (uint256 token1Amount)
-    {
-        uint256 token2After = token2Balance + _token2Amount;
-        uint256 token1After = K / token2After;
-        token1Amount = token1Balance - token1After;
-
-        // Don't let the pool go to 0
-        if (token1Amount == token1Balance) {
-            token1Amount--;
-        }
-
-        require(token1Amount < token1Balance, "swap amount to large");
     }
 
 }
