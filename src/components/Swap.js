@@ -33,6 +33,7 @@ import {
 } from '../store/interactions'
 
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
+                daiAccountBalance, wethAccountBalance,
                 price1, price2, price3, price4, price5, price6
               }) => {
 
@@ -296,12 +297,16 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 <Form.Text muted>
                 Balance: {
                   inputToken === 'DAPP' ? (
-                    parseFloat(dappAccountBalance).toFixed(2)
-                  ) : inputToken === 'USD' ? (
-                    parseFloat(usdAccountBalance).toFixed(2)
-                  ) : inputToken === 'APPL' ? (
-                    parseFloat(appleAccountBalance).toFixed(2)
-                  ) : 0
+                      parseFloat(dappAccountBalance).toFixed(2)
+                    ) : inputToken === 'USD' ? (
+                      parseFloat(usdAccountBalance).toFixed(2)
+                    ) : inputToken === 'APPL' ? (
+                      parseFloat(appleAccountBalance).toFixed(2)
+                    ) : inputToken === 'DAI' ? (
+                      parseFloat(daiAccountBalance).toFixed(2)
+                    ) : inputToken === 'WETH' ? (
+                      parseFloat(wethAccountBalance).toFixed(2)
+                    ) : 0
                   }
                 </Form.Text>
               </div>
@@ -322,6 +327,8 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >USD</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >APPL</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >DAI</Dropdown.Item>
+                  <Dropdown.Item onClick={(e) => setInputToken(e.target.innerHTML)} >WETH</Dropdown.Item>
                 </DropdownButton>
               </InputGroup>
             </Row>
@@ -330,12 +337,16 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 <Form.Label><strong>Output:</strong></Form.Label>
                 <Form.Text muted>
                 Balance: {
-                    (outputToken) === 'DAPP' ? (
+                  outputToken === 'DAPP' ? (
                       parseFloat(dappAccountBalance).toFixed(2)
                     ) : outputToken === 'USD' ? (
                       parseFloat(usdAccountBalance).toFixed(2)
                     ) : outputToken === 'APPL' ? (
                       parseFloat(appleAccountBalance).toFixed(2)
+                    ) : outputToken === 'DAI' ? (
+                      parseFloat(daiAccountBalance).toFixed(2)
+                    ) : outputToken === 'WETH' ? (
+                      parseFloat(wethAccountBalance).toFixed(2)
                     ) : 0
                   }
                 </Form.Text>
@@ -350,11 +361,20 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
                 <DropdownButton
                   variant="outline-secondary"
                   title={outputToken ? outputToken : "Select Token"}
-                  step="any"
                 >
+                  { inputToken !== 'WETH' && inputToken !=='DAI' && (
+                    <>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAPP</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>USD</Dropdown.Item>
                   <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>APPL</Dropdown.Item>
+                    </>
+                  )}
+                { inputToken =='WETH' && (
+                  <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>DAI</Dropdown.Item>
+                )}
+                { inputToken =='DAI' && (
+                  <Dropdown.Item onClick={(e) => setOutputToken(e.target.innerHTML)}>WETH</Dropdown.Item>
+                )}
                 </DropdownButton>
               </InputGroup>
             </Row>

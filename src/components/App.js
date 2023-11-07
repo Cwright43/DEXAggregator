@@ -16,6 +16,7 @@ import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
 import wethIcon from '../WETH.png';
 import daiIcon from '../DAI.png';
+import uniswapLogo from '../uniswap.png';
 import backgroundimage from '../Background.jpeg';
 
 // Components
@@ -52,6 +53,10 @@ import {
 
 function App() {
 
+  const routerArtifact = require('@uniswap/v2-periphery/build/UniswapV2Router02.json')
+  const erc20Abi = require('../abis/erc20.json')
+  const wethAbi = require('../abis/weth.json')
+
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
@@ -62,6 +67,8 @@ function App() {
   const [usd, setUSD] = useState(null)
   const [dapp, setDapp] = useState(null)
   const [apple, setApple] = useState(null)
+  const [dai, setDAI] = useState(null)
+  const [weth, setWETH] = useState(null)
 
   const [account, setAccount] = useState(null)
 
@@ -100,10 +107,12 @@ function App() {
   const poolDAI = useSelector(state => state.amm.poolDAI)
   const poolWETH = useSelector(state => state.amm.poolWETH)
 
-  // Load Account APPL Balance Individually
+  // Load Account Balance Individually
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
+    const [daiAccountBalance, setDAIAccountBalance] = useState(0)
+    const [wethAccountBalance, setWETHAccountBalance] = useState(0)
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -165,6 +174,12 @@ function App() {
     let apple = new ethers.Contract(config[1].apple.address, TOKEN_ABI, provider)
     setApple(apple)
 
+    let dai = new ethers.Contract(config[1].dai.address, erc20Abi, provider)
+    setDAI(dai)
+
+    let weth = new ethers.Contract(config[1].weth.address, wethAbi, provider)
+    setWETH(weth)
+
     // Retrieve Balances
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
       dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
@@ -177,6 +192,14 @@ function App() {
       let appleAccountBalance = await apple.balanceOf(accounts[0])
       appleAccountBalance = ethers.utils.formatUnits(appleAccountBalance, 18)
       setAppleAccountBalance(appleAccountBalance)
+
+      let daiAccountBalance = await dai.balanceOf(accounts[0])
+      daiAccountBalance = ethers.utils.formatUnits(daiAccountBalance, 18)
+      setDAIAccountBalance(daiAccountBalance)
+
+      let wethAccountBalance = await weth.balanceOf(accounts[0])
+      wethAccountBalance = ethers.utils.formatUnits(wethAccountBalance, 18)
+      setWETHAccountBalance(wethAccountBalance)
 
     // (DAPP / USD) - Dapp Swap
       let dappBalance1 = await dapp.balanceOf(dappswap.address)
@@ -637,6 +660,8 @@ function App() {
                                           dappAccountBalance={dappAccountBalance}
                                           usdAccountBalance={usdAccountBalance}
                                           appleAccountBalance={appleAccountBalance}
+                                          daiAccountBalance={daiAccountBalance}
+                                          wethAccountBalance={wethAccountBalance}
                                           price1={price1}
                                           price2={price2}
                                           price3={price3}
@@ -654,7 +679,7 @@ function App() {
 
         <div style={{ textAlign: "center" }}>
  
-        <h5 className='my-4 text-center p-3 mb-2 bg-gradient rounded-5'
+        <h4 className='my-1 text-center p-3 mb-2 bg-gradient rounded-5'
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex',
@@ -662,14 +687,14 @@ function App() {
             <img
             alt="dappswap"
             src={dappIcon}
-            width="40"
-            height="40"
+            width="45"
+            height="45"
             className="align-center mx-3 img-fluid"
             />
 
-        DApp Swap</h5> 
+        Dapp Swap</h4> 
 
-        <h5 className='my-4 text-center p-3 mb-2 bg-gradient rounded-5'       
+        <h4 className='my-1 text-center p-3 mb-2 bg-gradient rounded-5'       
           style={{ 
             alignItems: 'center', justifyContent: 'center', 
             width: '1296px', height: '55px', display: 'flex'
@@ -677,12 +702,27 @@ function App() {
             <img
             alt="appleswap"
             src={appleIcon}
-            width="40"
-            height="40"
-            className="align-center mx-3 img-fluid hover-overlay rounded-circle"
+            width="45"
+            height="45"
+            className="align-center mx-3 img-fluid rounded-circle"
             />
 
-        Apple Swap</h5>
+        Apple Swap</h4>
+
+        <h4 className='my-1 text-center p-3 mb-2 bg-gradient rounded-5'       
+          style={{ 
+            alignItems: 'center', justifyContent: 'center', 
+            width: '1296px', height: '55px', display: 'flex'
+          }}> 
+            <img
+            alt="uniswapLogo"
+            src={uniswapLogo}
+            width="60"
+            height="60"
+            className="align-center mx-3 img-fluid rounded-circle"
+            />
+
+        Uniswap</h4>
 
         </div>
 
