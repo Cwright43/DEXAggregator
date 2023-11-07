@@ -13,6 +13,7 @@ import { ethers } from 'ethers'
 
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
+import uniswapLogo from '../uniswap.png';
 
 import Alert from './Alert'
 
@@ -28,8 +29,8 @@ import {
   loadDappDappApple,
   loadApple,
   loadAppleAppleUSD,
-  loadAppleDappApple
-  
+  loadAppleDappApple,
+  loadDaiWETH,
 } from '../store/interactions'
 
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
@@ -45,6 +46,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 
   const [flagDapp, setFlagDapp] = useState(false)
   const [flagApple, setFlagApple] = useState(false)
+  const [flagUniswap, setFlagUniswap] = useState(false)
 
   const [price, setPrice] = useState(0)
   const [protocol, setProtocol] = useState(0)
@@ -95,7 +97,21 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       return
     }
 
-    if (protocol === 1) {
+    if (inputToken === 'DAI' || outputToken === 'WETH' ) {
+      setInputAmount(e.target.value)
+      const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
+      const result = await amm.calculateDaiSwap(_token1Amount)
+      const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      setOutputAmount(_token2Amount.toString())
+      setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+    } else if (inputToken === 'WETH' || outputToken === 'DAI') {
+      setInputAmount(e.target.value)
+      const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
+      const result = await amm.calculateWethSwap(_token2Amount)
+      const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+      setOutputAmount(_token1Amount.toString())
+      setExchangeRate((_token1Amount/_token2Amount) * 10e17)
+      } else if (protocol === 1) {
       setInputAmount(e.target.value)
       const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
       const result = await amm.calculateToken1Swap(_token1Amount)
@@ -109,7 +125,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
       setOutputAmount(_token1Amount.toString())
       setExchangeRate((_token1Amount/_token2Amount) * 10e17)
-      }
+  }
 
    }
 
@@ -126,14 +142,13 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     const _inputAmount = ethers.utils.parseUnits(inputAmount, 'ether')
       await loadTokens(provider, chainId, dispatch);
 
-    // Swap token depending upon which one we're doing...
-    if ((inputToken === 'DAPP' && outputToken === 'USD') 
-      || (inputToken === 'APPL' && outputToken === 'USD') 
-        || (inputToken === 'DAPP' && outputToken === 'APPL')) {
-      await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
-    } else {
-      await swap(provider, amm, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+    // Enact Swap Function Based Upon Protocol Orientation
+    if (protocol === 1) {
+      await swap(provider, amm, tokens[0],  tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+    } else if (protocol === 2) {
+      await swap(provider, amm, tokens[1],  tokens[0], inputToken, outputToken, _inputAmount, dispatch)
     }
+
 
     await loadBalances(amm, tokens, account, dispatch)
     await getPrice()
@@ -145,6 +160,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 
     setFlagApple(false)
     setFlagDapp(false)
+    setFlagUniswap(false)
 
     if (inputToken === outputToken) {
       setPrice(0)
@@ -156,13 +172,22 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       return
     }
 
-    if ((inputToken === 'DAPP' && outputToken === 'USD') ||
-    (inputToken === 'APPL' && outputToken === 'USD') ||
-      (inputToken === 'DAPP' && outputToken === 'APPL'))
-          {
-          setProtocol(1)
+      // Limit Drop-Down Menu When Selecting Testnet Tokens
+        if (inputToken === 'DAI') {
+          setOutputToken('WETH')
+        } else if (inputToken === 'WETH') {
+          setOutputToken('DAI')
+        }
+
+      // Declare Protocol From Token Pair Orientation
+        if ((inputToken === 'DAPP' && outputToken === 'USD') ||
+            (inputToken === 'APPL' && outputToken === 'USD') ||
+            (inputToken === 'DAPP' && outputToken === 'APPL') || 
+            (inputToken === 'DAI' && outputToken === 'WETH'))
+              {
+               setProtocol(1)
               } else {
-          setProtocol(2)
+               setProtocol(2)
               }
 
   // Fetch Chain ID for Active Network
@@ -174,6 +199,10 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       await loadAppleUSD(provider, chainId, dispatch);
   } else if ((inputToken === 'DAPP' && outputToken === 'APPL') || (inputToken === 'APPL' && outputToken === 'DAPP')) {
       await loadDappApple(provider, chainId, dispatch);
+  } else if ((inputToken === 'DAI' && outputToken === 'WETH') || (inputToken === 'WETH' && outputToken === 'DAI')) {
+    await loadDaiWETH(provider, chainId, dispatch);
+    console.log("Uniswap WINS");
+    setFlagUniswap(true);
   }
 
   if (inputToken === 'DAPP' && outputToken === 'USD') {
@@ -281,6 +310,19 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         src={appleIcon}
         width="40"
         height="40"
+        className="text-center mx-3 rounded-circle"
+        />
+    </h5>
+      )}
+      {flagUniswap && (
+    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
+>
+      Routing: Uniswap
+        <img
+        alt="uniswapLogo"
+        src={uniswapLogo}
+        width="60"
+        height="60"
         className="text-center mx-3 rounded-circle"
         />
     </h5>

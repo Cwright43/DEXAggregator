@@ -25,6 +25,7 @@ import Tabs from './Tabs';
 import Swap from './Swap';
 import Deposit from './Deposit';
 import Withdraw from './Withdraw';
+import Charts from './Charts';
 
 // Token icons
 import T1Icon from '../T1-Icon.png';
@@ -33,8 +34,6 @@ import T3Icon from '../T3-Icon.jpg';
 import TokenPair from '../TokenPair.jpg';
 import TokenPair2 from '../TokenPair2.png';
 import TokenPair3 from '../TokenPair3.png';
-
-import Charts from './Charts';
 
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
@@ -69,8 +68,14 @@ function App() {
   const [apple, setApple] = useState(null)
   const [dai, setDAI] = useState(null)
   const [weth, setWETH] = useState(null)
+  const [daiWethUniswap, setDaiWethUniswap] = useState(null)
+  const [router, setRouter] = useState(null)
 
+
+  // Assign Active User Account and Signer
   const [account, setAccount] = useState(null)
+  const [signer, setSigner] = useState(null)
+  const [wallet, setWallet] = useState(null)
 
   const [dappswap, setDappSwap] = useState(null)
   const [appleswap, setAppleSwap] = useState(null)
@@ -107,7 +112,7 @@ function App() {
   const poolDAI = useSelector(state => state.amm.poolDAI)
   const poolWETH = useSelector(state => state.amm.poolWETH)
 
-  // Load Account Balance Individually
+  // Load User Account Balance Individually for DAPP, APPL, USD, DAI, and WETH
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
     const [usdAccountBalance, setUSDAccountBalance] = useState(0)
     const [appleAccountBalance, setAppleAccountBalance] = useState(0)
@@ -130,6 +135,12 @@ function App() {
     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
     const account = ethers.utils.getAddress(accounts[0])
     setAccount(account)
+
+    const wallet = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80')
+    setWallet(wallet)
+
+    const signer = wallet.connect(provider)
+    setSigner(signer)
 
     // Reload page when network changes
     window.ethereum.on('chainChanged', () => {
@@ -164,6 +175,14 @@ function App() {
     const appleDappApple = new ethers.Contract(config[1].appleDappApple.address, AMM_ABI, provider)
     setAppleDappApple(appleDappApple)
 
+    // Load Dapp DAI / WETH Pool Address
+    const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
+    setDaiWethUniswap(daiWethUniswap)
+
+  // Load UniswapV2 Router Address
+    const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
+    setRouter(router)
+
     // Initiate Token contracts
     let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
     setUSD(usd)
@@ -180,7 +199,7 @@ function App() {
     let weth = new ethers.Contract(config[1].weth.address, wethAbi, provider)
     setWETH(weth)
 
-    // Retrieve Balances
+    // Retrieve User Account Balances
       let dappAccountBalance = await dapp.balanceOf(accounts[0])
       dappAccountBalance = ethers.utils.formatUnits(dappAccountBalance, 18)
       setDappAccountBalance(dappAccountBalance)
@@ -200,6 +219,8 @@ function App() {
       let wethAccountBalance = await weth.balanceOf(accounts[0])
       wethAccountBalance = ethers.utils.formatUnits(wethAccountBalance, 18)
       setWETHAccountBalance(wethAccountBalance)
+
+  // Retrieve All Six (6) Liquidity Pool Balances
 
     // (DAPP / USD) - Dapp Swap
       let dappBalance1 = await dapp.balanceOf(dappswap.address)

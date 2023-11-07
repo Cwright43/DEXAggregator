@@ -34,6 +34,10 @@ import TOKEN_ABI from '../abis/Token.json';
 import AMM_ABI from '../abis/AMM.json';
 import config from '../config.json';
 
+// --------------------------------------//
+//    Load Provider, Network, Account    //
+// --------------------------------------//
+
 export const loadProvider = (dispatch) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
   dispatch(setProvider(provider))
@@ -56,8 +60,11 @@ export const loadAccount = async (dispatch) => {
   return account
 }
 
-// ------------------------------------------------------------------------------
-// Load Tokens - DAPP, USD, APPL
+// --------------------------------------//
+//           Load Token Pairs            //
+// --------------------------------------//
+
+// Load DAPP / USD Token Pair
 export const loadTokens = async (provider, chainId, dispatch) => {
   const dapp = new ethers.Contract(config[chainId].dapp.address, TOKEN_ABI, provider)
   const usd = new ethers.Contract(config[chainId].usd.address, TOKEN_ABI, provider)
@@ -84,8 +91,19 @@ export const loadDappApple = async (provider, chainId, dispatch) => {
   dispatch(setSymbols([await dapp.symbol(), await apple.symbol()]))
 }
 
-// ------------------------------------------------------------------------------
-// Load Liquidity Pools
+// Load DAI / WETH Token Pair
+export const loadDaiWETH = async (provider, chainId, dispatch) => {
+  const dai = new ethers.Contract(config[chainId].dai.address, TOKEN_ABI, provider)
+  const weth = new ethers.Contract(config[chainId].weth.address, TOKEN_ABI, provider)
+
+  dispatch(setContracts([dai, weth]))
+  dispatch(setSymbols([await dai.symbol(), await weth.symbol()]))
+}
+
+// --------------------------------------//
+//          Load Liquidity Pools         //
+// --------------------------------------//
+
   export const loadAMM = async (provider, chainId, dispatch) => {
     const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
     dispatch(setContract(amm))
@@ -133,8 +151,19 @@ export const loadDappApple = async (provider, chainId, dispatch) => {
     return amm
   }
 
-// ------------------------------------------------------------------------------
-// LOAD BALANCES & SHARES
+  // Load (DAI / WETH) Address
+  export const loadUniswap = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].daiWethUniswap.address, AMM_ABI, provider)
+
+    dispatch(setContract(amm))
+    return amm
+  }
+
+// --------------------------------------//
+//        Load Balances and Shares       //
+// --------------------------------------//
+
+// Load Account Balances for Active Tokens, DAI, and WETH
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
   const balance2 = await tokens[1].balanceOf(account)
@@ -158,8 +187,11 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
 
 }
 
-// ------------------------------------------------------------------------------
-// ADD LIQUDITY
+// --------------------------------------//
+//         Add / Remove Liquidity        //
+// --------------------------------------//
+
+// Add Liquidity (Deposit Funcion)
 export const addLiquidity = async (provider, amm, tokens, amounts, dispatch) => {
   try {
     dispatch(depositRequest())
@@ -183,8 +215,7 @@ export const addLiquidity = async (provider, amm, tokens, amounts, dispatch) => 
   }
 }
 
-// ------------------------------------------------------------------------------
-// REMOVE LIQUDITY
+// Remove Liquidity (Withdraw Function)
 export const removeLiquidity = async (provider, amm, shares, dispatch) => {
   try {
     dispatch(withdrawRequest())
@@ -200,30 +231,32 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
   }
 }
 
-// ------------------------------------------------------------------------------
-// SWAP
+// --------------------------------------//
+//              Manage Swaps             //
+// --------------------------------------//
 
-export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amount, dispatch) => {
+// Swap Functionality
+export const swap = async (provider, amm, token1, token2, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
 
     let transaction
-
     const signer = await provider.getSigner()
 
-    transaction = await token.connect(signer).approve(amm.address, amount)
+    transaction = await token1.connect(signer).approve(amm.address, amount)
     await transaction.wait()
 
-    if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
+  if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
+      transaction = await amm.connect(signer).uniswap1(amount)
+    } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
+      console.log("Test A")
+      transaction = await amm.connect(signer).uniswap2(amount)
+    } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await amm.connect(signer).swapToken1(amount)
-    } else { 
+    } else {
       transaction = await amm.connect(signer).swapToken2(amount)
     }
-
-    await transaction.wait()
-
-    // Tell redux that the swap has finished - MISSION COMPLETE
 
     dispatch(swapSuccess(transaction.hash))
 
@@ -232,9 +265,7 @@ export const swap = async (provider, amm, token, inputSymbol, outputSymbol, amou
   }
 }
 
-// ------------------------------------------------------------------------------
-// LOAD ALL SWAPS
-
+// Load All Swaps
 export const loadAllSwaps = async (provider, _amm, dispatch) => {
   const block = await provider.getBlockNumber()
 
