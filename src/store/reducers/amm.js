@@ -26,11 +26,8 @@ export const amm = createSlice({
     setContract: (state, action) => {
       state.contract = action.payload
     },
-    setContract1: (state, action) => {
-      state.contract = action.payload
-    },
-    sharesLoaded: (state, action) => {
-      state.shares = action.payload
+    setAggregator: (state, action) => {
+      state.aggregator = action.payload
     },
     token1Loaded: (state, action) => {
       state.token1 = action.payload
@@ -43,6 +40,12 @@ export const amm = createSlice({
     },
     poolWETHLoaded: (state, action) => {
       state.poolWETH = action.payload
+    },
+    poolDAI1Loaded: (state, action) => {
+      state.poolDAI1 = action.payload
+    },
+    poolWETH1Loaded: (state, action) => {
+      state.poolWETH1 = action.payload
     },
     swapsLoaded: (state, action) => {
       state.swaps = action.payload
@@ -97,11 +100,14 @@ export const amm = createSlice({
 
 export const {
   setContract,
+  setAggregator,
   sharesLoaded,
   token1Loaded,
   token2Loaded,
   poolDAILoaded,
   poolWETHLoaded,
+  poolDAI1Loaded,
+  poolWETH1Loaded,
   swapsLoaded,
   depositRequest,
   depositSuccess,

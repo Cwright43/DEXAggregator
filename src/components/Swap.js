@@ -24,13 +24,14 @@ import {
   loadTokens,
   loadAppleUSD,
   loadDappApple,
-  loadDapp,
+  loadDappDappUSD,
   loadDappAppleUSD,
   loadDappDappApple,
-  loadApple,
+  loadAppleDappUSD,
   loadAppleAppleUSD,
   loadAppleDappApple,
   loadDaiWETH,
+  loadDaiWethBalances,
 } from '../store/interactions'
 
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
@@ -61,6 +62,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   const balances = useSelector(state => state.tokens.balances)
 
   const amm = useSelector(state => state.amm.contract)
+  const aggregator = useSelector(state => state.amm.aggregator)
   const chainId = useSelector(state => state.provider.chainId)
   const isSwapping = useSelector(state => state.amm.swapping.isSwapping)
   const isSuccess = useSelector(state => state.amm.swapping.isSuccess)
@@ -97,17 +99,20 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       return
     }
 
+    await loadBalances(amm, tokens, account, dispatch)
+    await loadDaiWethBalances(aggregator, dispatch)
+
     if (inputToken === 'DAI' || outputToken === 'WETH' ) {
       setInputAmount(e.target.value)
       const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await amm.calculateDaiSwap(_token1Amount)
+      const result = await aggregator.calculateDaiSwap(_token1Amount)
       const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
       setOutputAmount(_token2Amount.toString())
       setExchangeRate((_token2Amount/_token1Amount) * 10e17)
     } else if (inputToken === 'WETH' || outputToken === 'DAI') {
       setInputAmount(e.target.value)
       const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await amm.calculateWethSwap(_token2Amount)
+      const result = await aggregator.calculateWethSwap(_token2Amount)
       const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
       setOutputAmount(_token1Amount.toString())
       setExchangeRate((_token1Amount/_token2Amount) * 10e17)
@@ -142,13 +147,15 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     const _inputAmount = ethers.utils.parseUnits(inputAmount, 'ether')
       await loadTokens(provider, chainId, dispatch);
 
-    // Enact Swap Function Based Upon Protocol Orientation
-    if (protocol === 1) {
-      await swap(provider, amm, tokens[0],  tokens[1], inputToken, outputToken, _inputAmount, dispatch)
-    } else if (protocol === 2) {
-      await swap(provider, amm, tokens[1],  tokens[0], inputToken, outputToken, _inputAmount, dispatch)
-    }
-
+      if (inputToken === 'DAI' && outputToken === 'WETH') {
+        await swap(provider, aggregator, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
+      } else if (inputToken === 'WETH' && outputToken === 'DAI') {
+        await swap(provider, aggregator, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+      } else if (protocol === 1) {
+        await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
+      } else if (protocol === 2) {
+        await swap(provider, amm, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+      }
 
     await loadBalances(amm, tokens, account, dispatch)
     await getPrice()
@@ -193,6 +200,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   // Fetch Chain ID for Active Network
   const chainId = await loadNetwork(provider, dispatch)
 
+  // Loading Active Token Pair & Liquidity Pool Addresses
   if ((inputToken === 'DAPP' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'DAPP')) {
       await loadTokens(provider, chainId, dispatch);
   } else if ((inputToken === 'APPL' && outputToken === 'USD') || (inputToken === 'USD' && outputToken === 'APPL')) {
@@ -201,27 +209,28 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       await loadDappApple(provider, chainId, dispatch);
   } else if ((inputToken === 'DAI' && outputToken === 'WETH') || (inputToken === 'WETH' && outputToken === 'DAI')) {
     await loadDaiWETH(provider, chainId, dispatch);
+    await loadDaiWethBalances(aggregator, dispatch);
     console.log("Uniswap WINS");
     setFlagUniswap(true);
   }
 
   if (inputToken === 'DAPP' && outputToken === 'USD') {
         if (price2 > price1) {
-          await loadApple(provider, chainId, dispatch)
+          await loadAppleDappUSD(provider, chainId, dispatch)
           console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
-          await loadDapp(provider, chainId, dispatch)
+          await loadDappDappUSD(provider, chainId, dispatch)
           console.log("DappSwap WINS")
           setFlagDapp(true)
         }
   } else if (inputToken === 'USD' && outputToken === 'DAPP') {
         if (price1 > price2) {
-          await loadApple(provider, chainId, dispatch)
+          await loadAppleDappUSD(provider, chainId, dispatch)
           console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
-          await loadDapp(provider, chainId, dispatch)
+          await loadDappDappUSD(provider, chainId, dispatch)
           console.log("DappSwap WINS")
           setFlagDapp(true)
         }
@@ -278,6 +287,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     }
 
    await loadBalances(amm, tokens, account, dispatch);
+   await loadDaiWethBalances(aggregator, dispatch);
 }
 
   useEffect(() => {

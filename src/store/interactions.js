@@ -14,10 +14,13 @@ import {
 
 import {
   setContract,
+  setAggregator,
   token1Loaded,
   token2Loaded,
   poolDAILoaded,
   poolWETHLoaded,
+  poolDAI1Loaded,
+  poolWETH1Loaded,
   swapsLoaded,
   swapRequest,
   swapSuccess,
@@ -32,6 +35,7 @@ import {
 
 import TOKEN_ABI from '../abis/Token.json';
 import AMM_ABI from '../abis/AMM.json';
+import AGGREGATOR_ABI from '../abis/Aggregator.json';
 import config from '../config.json';
 
 // --------------------------------------//
@@ -104,15 +108,17 @@ export const loadDaiWETH = async (provider, chainId, dispatch) => {
 //          Load Liquidity Pools         //
 // --------------------------------------//
 
-  export const loadAMM = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].amm.address, AMM_ABI, provider)
-    dispatch(setContract(amm))
-    return amm
-  }
+  // Load Aggregator Address
+  export const loadAggregator = async (provider, chainId, dispatch) => {
+  const aggregator = new ethers.Contract(config[chainId].aggregator.address, AGGREGATOR_ABI, provider)
+
+  dispatch(setAggregator(aggregator))
+  return aggregator
+}
 
   // Load Dapp Swap (DAPP / USD) Address
-  export const loadDapp = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].dappswap.address, AMM_ABI, provider)
+  export const loadDappDappUSD = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].dappDappUSD.address, AMM_ABI, provider)
     dispatch(setContract(amm))
     return amm
   }
@@ -131,8 +137,8 @@ export const loadDaiWETH = async (provider, chainId, dispatch) => {
   }
 
   // Load Apple Swap (DAPP / USD) Address
-  export const loadApple = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].appleswap.address, AMM_ABI, provider)
+  export const loadAppleDappUSD = async (provider, chainId, dispatch) => {
+    const amm = new ethers.Contract(config[chainId].appleDappUSD.address, AMM_ABI, provider)
     dispatch(setContract(amm))
     return amm
   }
@@ -164,10 +170,11 @@ export const loadDaiWETH = async (provider, chainId, dispatch) => {
 // --------------------------------------//
 
 // Load Account Balances for Active Tokens, DAI, and WETH
+
 export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const balance1 = await tokens[0].balanceOf(account)
   const balance2 = await tokens[1].balanceOf(account)
-
+ 
   dispatch(balancesLoaded([
     ethers.utils.formatUnits(balance1.toString(), 'ether'),
     ethers.utils.formatUnits(balance2.toString(), 'ether')
@@ -179,12 +186,22 @@ export const loadBalances = async (_amm, tokens, account, dispatch) => {
   const token2 = await _amm.token2Balance()
   dispatch(token2Loaded(ethers.utils.formatUnits(token2.toString(), 'ether')))
 
-  const poolDAI = await _amm.poolDAIbalance()
+}
+
+export const loadDaiWethBalances = async (_amm, dispatch) => {
+  
+  const poolDAI = await _amm.pool1daiBalance()
   dispatch(poolDAILoaded(ethers.utils.formatUnits(poolDAI.toString(), 'ether')))
 
-  const poolWETH = await _amm.poolWETHbalance()
+  const poolWETH = await _amm.pool1wethBalance()
   dispatch(poolWETHLoaded(ethers.utils.formatUnits(poolWETH.toString(), 'ether')))
 
+  const poolDAI1 = await _amm.pool2daiBalance()
+  dispatch(poolDAI1Loaded(ethers.utils.formatUnits(poolDAI1.toString(), 'ether')))
+
+  const poolWETH1 = await _amm.pool2wethBalance()
+  dispatch(poolWETH1Loaded(ethers.utils.formatUnits(poolWETH1.toString(), 'ether')))
+  
 }
 
 // --------------------------------------//

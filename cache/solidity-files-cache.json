@@ -112,8 +112,8 @@
       ]
     },
     "/home/arcturian/aggregator/contracts/Aggregator.sol": {
-      "lastModificationDate": 1696989187363,
-      "contentHash": "260776c8b49789341fd04cc6ecd53f5b",
+      "lastModificationDate": 1700092213178,
+      "contentHash": "f10b1fbe426bd8e7c8f9407c6b4d89ca",
       "sourceName": "contracts/Aggregator.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -140,13 +140,19 @@
       },
       "imports": [
         "hardhat/console.sol",
-        "./Token.sol"
+        "./Token.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
+        "@openzeppelin/contracts/utils/math/SafeMath.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
       ],
       "artifacts": [
-        "Aggregator"
+        "Aggregator",
+        "IUniswapV2ERC20",
+        "IWETH"
       ]
     },
     "/home/arcturian/aggregator/node_modules/hardhat/console.sol": {
@@ -364,8 +370,8 @@
       ]
     },
     "/home/arcturian/aggregator/contracts/AMM.sol": {
-      "lastModificationDate": 1699327141910,
-      "contentHash": "c624659991a4c67582d8028501bb6b11",
+      "lastModificationDate": 1700092185210,
+      "contentHash": "fe68f31b04b89a18919fe00cae83a5ca",
       "sourceName": "contracts/AMM.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -404,7 +410,6 @@
       "artifacts": [
         "AMM",
         "IUniswapV2ERC20",
-        "IUniswapV2Pair",
         "IWETH"
       ]
     },

@@ -47,7 +47,7 @@ import {
   loadNetwork,
   loadAccount,
   loadTokens,
-  loadAMM
+  loadDappDappUSD
 } from '../store/interactions'
 
 function App() {
@@ -77,8 +77,8 @@ function App() {
   const [signer, setSigner] = useState(null)
   const [wallet, setWallet] = useState(null)
 
-  const [dappswap, setDappSwap] = useState(null)
-  const [appleswap, setAppleSwap] = useState(null)
+  const [dappDappUSD, setDappDappUSD] = useState(null)
+  const [appleDappUSD, setAppleDappUSD] = useState(null)
   const [dappAppleUSD, setDappAppleUSD] = useState(null)
   const [appleAppleUSD, setAppleAppleUSD] = useState(null)
   const [dappDappApple, setDappDappApple] = useState(null)
@@ -154,14 +154,14 @@ function App() {
 
     // Initiate contracts - Redux
     await loadTokens(provider, chainId, dispatch)
-    await loadAMM(provider, chainId, dispatch)
+    await loadDappDappUSD(provider, chainId, dispatch)
 
     // Initiate liquidity pool contracts
-    const dappswap = new ethers.Contract(config[1].dappswap.address, AMM_ABI, provider)
-    setDappSwap(dappswap)
+    const dappDappUSD = new ethers.Contract(config[1].dappDappUSD.address, AMM_ABI, provider)
+    setDappDappUSD(dappDappUSD)
 
-    const appleswap = new ethers.Contract(config[1].appleswap.address, AMM_ABI, provider)
-    setAppleSwap(appleswap)
+    const appleDappUSD = new ethers.Contract(config[1].appleDappUSD.address, AMM_ABI, provider)
+    setAppleDappUSD(appleDappUSD)
 
     const dappAppleUSD = new ethers.Contract(config[1].dappAppleUSD.address, AMM_ABI, provider)
     setDappAppleUSD(dappAppleUSD)
@@ -223,11 +223,11 @@ function App() {
   // Retrieve All Six (6) Liquidity Pool Balances
 
     // (DAPP / USD) - Dapp Swap
-      let dappBalance1 = await dapp.balanceOf(dappswap.address)
+      let dappBalance1 = await dapp.balanceOf(dappDappUSD.address)
       dappBalance1 = ethers.utils.formatUnits(dappBalance1, 18)
       setDappBalance1(dappBalance1)
 
-      let usdBalance1 = await usd.balanceOf(dappswap.address)
+      let usdBalance1 = await usd.balanceOf(dappDappUSD.address)
       usdBalance1 = ethers.utils.formatUnits(usdBalance1, 18)
       setUSDBalance1(usdBalance1)
 
@@ -235,11 +235,11 @@ function App() {
       setPrice1(price1)
 
     // (DAPP / USD) - Apple Swap
-      let dappBalance2 = await dapp.balanceOf(appleswap.address)
+      let dappBalance2 = await dapp.balanceOf(appleDappUSD.address)
       dappBalance2 = ethers.utils.formatUnits(dappBalance2, 18)
       setDappBalance2(dappBalance2)
 
-      let usdBalance2 = await usd.balanceOf(appleswap.address)
+      let usdBalance2 = await usd.balanceOf(appleDappUSD.address)
       usdBalance2 = ethers.utils.formatUnits(usdBalance2, 18)
       setUSDBalance2(usdBalance2)
 
