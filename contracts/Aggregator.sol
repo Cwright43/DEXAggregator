@@ -207,5 +207,4 @@ contract Aggregator {
             );
     }
 
-
 }

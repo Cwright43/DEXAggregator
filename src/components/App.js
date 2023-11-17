@@ -71,7 +71,6 @@ function App() {
   const [daiWethUniswap, setDaiWethUniswap] = useState(null)
   const [router, setRouter] = useState(null)
 
-
   // Assign Active User Account and Signer
   const [account, setAccount] = useState(null)
   const [signer, setSigner] = useState(null)
@@ -109,8 +108,10 @@ function App() {
   const [price6, setPrice6] = useState(0)
 
   // Load DAI/WETH Balances from Mainnet
-  const poolDAI = useSelector(state => state.amm.poolDAI)
-  const poolWETH = useSelector(state => state.amm.poolWETH)
+    const poolDAI = useSelector(state => state.amm.poolDAI)
+    const poolWETH = useSelector(state => state.amm.poolWETH)
+    const poolDAI1 = useSelector(state => state.amm.poolDAI1)
+    const poolWETH1 = useSelector(state => state.amm.poolWETH1)
 
   // Load User Account Balance Individually for DAPP, APPL, USD, DAI, and WETH
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
@@ -315,8 +316,10 @@ function App() {
 
       <HashRouter>
         <Navigation />
-  <h4 className="text-center text-white">Total DAI: {parseFloat(poolDAI).toFixed(2)}</h4>
-  <h4 className="text-center text-white">Total WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
+  <h4 className="text-center text-white">Total DAI in DAI / WETH: {parseFloat(poolDAI).toFixed(2)}</h4>
+  <h4 className="text-center text-white">Total WETH in DAI / WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
+  <h4 className="text-center text-white">Total DAI in WETH / DAI: {parseFloat(poolDAI1).toFixed(2)}</h4>
+  <h4 className="text-center text-white">Total WETH in WETH / DAI: {parseFloat(poolWETH1).toFixed(2)}</h4>
 <Row>
   <Col>
 
