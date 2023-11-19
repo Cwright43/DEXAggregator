@@ -112,8 +112,8 @@
       ]
     },
     "/home/arcturian/aggregator/contracts/Aggregator.sol": {
-      "lastModificationDate": 1700092213178,
-      "contentHash": "f10b1fbe426bd8e7c8f9407c6b4d89ca",
+      "lastModificationDate": 1700362614196,
+      "contentHash": "5c2a2b3a42bca9f03a854b8ecff68b16",
       "sourceName": "contracts/Aggregator.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -151,6 +151,8 @@
       ],
       "artifacts": [
         "Aggregator",
+        "IERC20_USDC",
+        "IERC20_USDT",
         "IUniswapV2ERC20",
         "IWETH"
       ]

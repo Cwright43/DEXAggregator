@@ -21,6 +21,10 @@ import {
   poolWETHLoaded,
   poolDAI1Loaded,
   poolWETH1Loaded,
+  poolDAI2Loaded,
+  poolWETH2Loaded,
+  poolDAI3Loaded,
+  poolWETH3Loaded,
   swapsLoaded,
   swapRequest,
   swapSuccess,
@@ -201,6 +205,18 @@ export const loadDaiWethBalances = async (_amm, dispatch) => {
 
   const poolWETH1 = await _amm.pool2wethBalance()
   dispatch(poolWETH1Loaded(ethers.utils.formatUnits(poolWETH1.toString(), 'ether')))
+
+  const poolDAI2 = await _amm.pool3daiBalance()
+  dispatch(poolDAI2Loaded(ethers.utils.formatUnits(poolDAI2.toString(), 'ether')))
+
+  const poolWETH2 = await _amm.pool3wethBalance()
+  dispatch(poolWETH2Loaded(ethers.utils.formatUnits(poolWETH2.toString(), 'ether')))
+  
+  const poolDAI3 = await _amm.pool4daiBalance()
+  dispatch(poolDAI3Loaded(ethers.utils.formatUnits(poolDAI3.toString(), 'ether')))
+
+  const poolWETH3 = await _amm.pool4wethBalance()
+  dispatch(poolWETH3Loaded(ethers.utils.formatUnits(poolWETH3.toString(), 'ether')))
   
 }
 

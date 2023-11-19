@@ -110,8 +110,15 @@ function App() {
   // Load DAI/WETH Balances from Mainnet
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
+
     const poolDAI1 = useSelector(state => state.amm.poolDAI1)
     const poolWETH1 = useSelector(state => state.amm.poolWETH1)
+
+    const poolDAI2 = useSelector(state => state.amm.poolDAI2)
+    const poolWETH2 = useSelector(state => state.amm.poolWETH2)
+
+    const poolDAI3 = useSelector(state => state.amm.poolDAI3)
+    const poolWETH3 = useSelector(state => state.amm.poolWETH3)
 
   // Load User Account Balance Individually for DAPP, APPL, USD, DAI, and WETH
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
@@ -316,10 +323,22 @@ function App() {
 
       <HashRouter>
         <Navigation />
-  <h4 className="text-center text-white">Total DAI in DAI / WETH: {parseFloat(poolDAI).toFixed(2)}</h4>
-  <h4 className="text-center text-white">Total WETH in DAI / WETH: {parseFloat(poolWETH).toFixed(2)}</h4>
-  <h4 className="text-center text-white">Total DAI in WETH / DAI: {parseFloat(poolDAI1).toFixed(2)}</h4>
-  <h4 className="text-center text-white">Total WETH in WETH / DAI: {parseFloat(poolWETH1).toFixed(2)}</h4>
+<Row>
+  <Col>
+  <h4 className="text-center text-white">Uniswap Balances</h4>
+  <h5 className="text-center text-white">Total DAI in DAI / WETH: {parseFloat(poolDAI).toFixed(2)}</h5>
+  <h5 className="text-center text-white">Total WETH in DAI / WETH: {parseFloat(poolWETH).toFixed(2)}</h5>
+  <h5 className="text-center text-white">Total DAI in WETH / DAI: {parseFloat(poolDAI1).toFixed(2)}</h5>
+  <h5 className="text-center text-white">Total WETH in WETH / DAI: {parseFloat(poolWETH1).toFixed(2)}</h5>
+  </Col>
+  <Col>
+  <h4 className="text-center text-warning">Sushiswap Balances</h4>
+  <h5 className="text-center text-warning">Total DAI in DAI / WETH: {parseFloat(poolDAI2).toFixed(2)}</h5>
+  <h5 className="text-center text-warning">Total WETH in DAI / WETH: {parseFloat(poolWETH2).toFixed(2)}</h5>
+  <h5 className="text-center text-warning">Total DAI in WETH / DAI: {parseFloat(poolDAI3).toFixed(2)}</h5>
+  <h5 className="text-center text-warning">Total WETH in WETH / DAI: {parseFloat(poolWETH3).toFixed(2)}</h5>
+  </Col>
+</Row>
 <Row>
   <Col>
 

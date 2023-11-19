@@ -47,6 +47,18 @@ export const amm = createSlice({
     poolWETH1Loaded: (state, action) => {
       state.poolWETH1 = action.payload
     },
+    poolDAI2Loaded: (state, action) => {
+      state.poolDAI2 = action.payload
+    },
+    poolWETH2Loaded: (state, action) => {
+      state.poolWETH2 = action.payload
+    },
+    poolDAI3Loaded: (state, action) => {
+      state.poolDAI3 = action.payload
+    },
+    poolWETH3Loaded: (state, action) => {
+      state.poolWETH3 = action.payload
+    },
     swapsLoaded: (state, action) => {
       state.swaps = action.payload
     },
@@ -108,6 +120,10 @@ export const {
   poolWETHLoaded,
   poolDAI1Loaded,
   poolWETH1Loaded,
+  poolDAI2Loaded,
+  poolWETH2Loaded,
+  poolDAI3Loaded,
+  poolWETH3Loaded,
   swapsLoaded,
   depositRequest,
   depositSuccess,
