@@ -52,18 +52,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   const [flagUniswap, setFlagUniswap] = useState(false)
   const [flagSushiswap, setFlagSushiswap] = useState(false)
 
-  // Load DAI/WETH Balances from Mainnet
-  const poolDAI = useSelector(state => state.amm.poolDAI)
-  const poolWETH = useSelector(state => state.amm.poolWETH)
 
-  const poolDAI1 = useSelector(state => state.amm.poolDAI1)
-  const poolWETH1 = useSelector(state => state.amm.poolWETH1)
-
-  const poolDAI2 = useSelector(state => state.amm.poolDAI2)
-  const poolWETH2 = useSelector(state => state.amm.poolWETH2)
-
-  const poolDAI3 = useSelector(state => state.amm.poolDAI3)
-  const poolWETH3 = useSelector(state => state.amm.poolWETH3)
 
   // Load Other Stuff
 
@@ -88,6 +77,19 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 
   const token1 = useSelector(state => state.amm.token1)
   const token2 = useSelector(state => state.amm.token2)
+
+  // Load DAI/WETH Balances from Mainnet
+  const poolDAI = useSelector(state => state.amm.poolDAI)
+  const poolWETH = useSelector(state => state.amm.poolWETH)
+
+  const poolDAI1 = useSelector(state => state.amm.poolDAI1)
+  const poolWETH1 = useSelector(state => state.amm.poolWETH1)
+
+  const poolDAI2 = useSelector(state => state.amm.poolDAI2)
+  const poolWETH2 = useSelector(state => state.amm.poolWETH2)
+
+  const poolDAI3 = useSelector(state => state.amm.poolDAI3)
+  const poolWETH3 = useSelector(state => state.amm.poolWETH3)
 
   const dispatch = useDispatch()
 

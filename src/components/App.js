@@ -28,7 +28,7 @@ import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 import Charts from './Charts';
 
-// Token icons
+// Token icons - KEEP?
 import T1Icon from '../T1-Icon.png';
 import T2Icon from '../T2-Icon.jpg';
 import T3Icon from '../T3-Icon.jpg';
@@ -60,9 +60,6 @@ function App() {
   const [open1, setOpen1] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [open3, setOpen3] = useState(false);
-  const [open4, setOpen4] = useState(false);
-  const [open5, setOpen5] = useState(false);
-  const [open6, setOpen6] = useState(false);
 
   const [usd, setUSD] = useState(null)
   const [dapp, setDapp] = useState(null)
@@ -123,9 +120,6 @@ function App() {
 
     const poolDAI2 = useSelector(state => state.amm.poolDAI2)
     const poolWETH2 = useSelector(state => state.amm.poolWETH2)
-
-    const poolDAI3 = useSelector(state => state.amm.poolDAI3)
-    const poolWETH3 = useSelector(state => state.amm.poolWETH3)
 
   // Load User Account Balance Individually for DAPP, APPL, USD, DAI, and WETH
     const [dappAccountBalance, setDappAccountBalance] = useState(0)
@@ -321,10 +315,6 @@ function App() {
       let sushiswapPrice1 = (poolDAI2 / poolWETH2)
       setSushiswapPrice1(sushiswapPrice1)
 
-      // (WETH / DAI) - Sushiswap
-      let sushiswapPrice2 = (poolDAI3 / poolWETH3)
-      setSushiswapPrice2(sushiswapPrice2)
-
   }
 
   useEffect(() => {
@@ -362,9 +352,6 @@ function App() {
   <h5 className="text-center text-warning">Total DAI in DAI / WETH: {parseFloat(poolDAI2).toFixed(2)}</h5>
   <h5 className="text-center text-warning">Total WETH in DAI / WETH: {parseFloat(poolWETH2).toFixed(2)}</h5>
   <h5 className="text-center text-warning">Rate 1: {parseFloat(poolDAI2 / poolWETH2).toFixed(2)}</h5>
-  <h5 className="text-center text-warning">Total DAI in WETH / DAI: {parseFloat(poolDAI3).toFixed(2)}</h5>
-  <h5 className="text-center text-warning">Total WETH in WETH / DAI: {parseFloat(poolWETH3).toFixed(2)}</h5>
-  <h5 className="text-center text-warning">Rate 2: {parseFloat(poolDAI3 / poolWETH3).toFixed(2)}</h5>
   </Col>
 </Row>
 <Row>
@@ -373,12 +360,12 @@ function App() {
     <>
  <h6 className='bg-gradient rounded-5 text-white { opacity: 0.1 }' style={{ width: '660px', color: 'white', textAlign: 'center'}}>
       <img
-        alt="dappswap"
-        src={dappIcon}
+        alt="uniswapLogo"
+        src={uniswapLogo}
         width="60"
         height="60"
         className="align-right mx-3 img-fluid hover-overlay text-center"
-        /> Dapp Swap
+        /> Uniswap
   </h6>
   <Row>
     <Col>
@@ -388,7 +375,7 @@ function App() {
         aria-expanded={open1}
         className='my-4'
       >
-        (1) DAPP / USD 
+        (1) DAI / WETH
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
         <Collapse in={open1} dimension="width">
@@ -398,35 +385,42 @@ function App() {
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
               <img
-                alt="dapptoken"
-                src={dappIcon}
+                alt="DAItoken"
+                src={daiIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-          <strong>{parseFloat(dappBalance1).toFixed(2)} DAPP</strong></h6>
+          <strong>{parseFloat(poolDAI).toFixed(2)} DAI</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
               <img
-                alt="USDtoken"
-                src={T2Icon}
+                alt="WETHtoken"
+                src={wethIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance1).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(poolWETH).toFixed(2)} WETH</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
                           <img
-                alt="dapp/usd-pair"
-                src={TokenPair}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
+                alt="dai/weth-pair"
+                src={daiIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price1).toFixed(2)}</strong></h6>
+                          <img
+                alt="dai/weth-pair"
+                src={wethIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
+                />
+          <strong className="mx-3">       Rate: {parseFloat( poolDAI / poolWETH ).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -442,7 +436,7 @@ function App() {
         aria-expanded={open2}
         className='my-4'
       >
-        (2) APPL / USD 
+        (2) WETH / DAI
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
         <Collapse in={open2} dimension="width">
@@ -452,35 +446,42 @@ function App() {
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
                           <img
-                alt="appltoken"
-                src={T3Icon}
+                alt="WETHtoken"
+                src={wethIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(appleBalance1).toFixed(2)} APPL</strong></h6>
+          <strong>{parseFloat(poolWETH1).toFixed(2)} WETH</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
                           <img
-                alt="usdtoken"
-                src={T2Icon}
+                alt="DAItoken"
+                src={daiIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance3).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(poolDAI1).toFixed(2)} DAI</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
+            <h6 className='my-1'>
                           <img
-                alt="appl/usd-pair"
-                src={TokenPair2}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
+                alt="dai/weth-pair"
+                src={wethIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price3).toFixed(2)}</strong></h6>
+                          <img
+                alt="dai/weth-pair"
+                src={daiIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
+                />
+          <strong className="mx-3">Rate: {parseFloat( poolWETH1 / poolDAI1 ).toFixed(5)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -490,13 +491,29 @@ function App() {
       </div>
     </Col>
   </Row>
+    </>
+  </Col>
+  <Col>
+
+    <>
+ <h6 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
+      <img
+        alt="sushiswapLogo"
+        src={sushiswapLogo}
+        width="60"
+        height="60"
+        className="align-right mx-3 img-fluid hover-overlay rounded-circle"
+        /> Sushiswap
+  </h6>
+<Row>
     <Col>
       <Button
         onClick={() => setOpen3(!open3)}
         aria-controls="example-collapse-text"
         aria-expanded={open3}
+        className='my-4'
       >
-        (3) DAPP / APPL 
+        (1) DAI / WETH
       </Button>
       <div style={{ minHeight: '100px', textAlign: 'left'}}>
         <Collapse in={open3} dimension="width">
@@ -505,158 +522,43 @@ function App() {
           <ListGroup>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
-                          <img
-                alt="dapptoken"
-                src={T1Icon}
+              <img
+                alt="DAItoken"
+                src={daiIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid"
                 />
-          <strong>{parseFloat(dappBalance3).toFixed(2)} DAPP</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-                          <img
-                alt="appletoken"
-                src={T3Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid rounded-circle"
-                />
-          <strong>{parseFloat(appleBalance3).toFixed(2)} APPL</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-                          <img
-                alt="dapp/apple-pair"
-                src={TokenPair3}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
-                />
-          <strong>Rate: {parseFloat(price5).toFixed(2)}</strong></h6>
-            </ListGroup.Item>
-         </ListGroup> 
-            </Card>
-          </div>
-        </Collapse>
-      </div>
-    </Col>
-    </>
-  </Col>
-  <Col>
-
-    <>
- <h6 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
-      <img
-        alt="appleswap"
-        src={appleIcon}
-        width="60"
-        height="60"
-        className="align-right mx-3 img-fluid hover-overlay rounded-circle"
-        /> Apple Swap
-  </h6>
-<Row>
-    <Col>
-      <Button
-        onClick={() => setOpen4(!open4)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open4}
-        className='my-4'
-      >
-        (1) DAPP / USD 
-      </Button>
-      <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open4} dimension="width">
-          <div id="example-collapse-text">
-            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
-          <ListGroup>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-              <img
-                alt="dapptoken"
-                src={T1Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-          <strong>{parseFloat(dappBalance2).toFixed(2)} DAPP</strong></h6>
+          <strong>{parseFloat(poolDAI2).toFixed(2)} DAI</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
           <h6 className='my-1'>
               <img
-                alt="USDtoken"
-                src={T2Icon}
+                alt="WETHtoken"
+                src={wethIcon}
                 width="40"
                 height="40"
                 className="align-right mx-3 img-fluid rounded-circle"
                 />
-          <strong>{parseFloat(usdBalance2).toFixed(2)} USD</strong></h6>
+          <strong>{parseFloat(poolWETH2).toFixed(2)} WETH</strong></h6>
             </ListGroup.Item>
             <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
+            <h6 className='my-1'>
                           <img
-                alt="dapp/usd-pair"
-                src={TokenPair}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
+                alt="dai/weth-pair"
+                src={daiIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price2).toFixed(2)}</strong></h6>
-            </ListGroup.Item>
-         </ListGroup> 
-            </Card>
-         
-          </div>
-        </Collapse>
-      </div>
-    </Col>
-    <Col>
-      <Button
-        onClick={() => setOpen5(!open5)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open5}
-        className='my-4'
-      >
-        (2) APPL / USD 
-      </Button>
-      <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open5} dimension="width">
-          <div id="example-collapse-text">
-            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
-          <ListGroup>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-              <img
-                alt="appletoken"
-                src={T3Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid rounded-circle"
-                />
-          <strong>{parseFloat(appleBalance2).toFixed(2)} APPL</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-              <img
-                alt="USDtoken"
-                src={T2Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid rounded-circle"
-                />
-          <strong>{parseFloat(usdBalance4).toFixed(2)} USD</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
                           <img
-                alt="dapp/usd-pair"
-                src={TokenPair2}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
+                alt="dai/weth-pair"
+                src={wethIcon}
+                width="30"
+                height="30"
+                className="align-right img-fluid rounded"
                 />
-          <strong>Rate: {parseFloat(price4).toFixed(2)}</strong></h6>
+          <strong className="mx-3">Rate: {parseFloat(poolDAI2 / poolWETH2).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -666,58 +568,6 @@ function App() {
       </div>
     </Col>
     </Row>
-    <Col>
-      <Button
-        onClick={() => setOpen6(!open6)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open6}
-      >
-        (3) DAPP / APPL
-      </Button>
-      <div style={{ minHeight: '100px', textAlign: 'left'}}>
-        <Collapse in={open6} dimension="width">
-          <div id="example-collapse-text">
-            <Card body style={{ width: '275px', backgroundColor: 'cyan' }}>
-          <ListGroup>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-              <img
-                alt="dapptoken"
-                src={T1Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid"
-                />
-          <strong>{parseFloat(dappBalance4).toFixed(2)} DAPP</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-              <img
-                alt="appletoken"
-                src={T3Icon}
-                width="40"
-                height="40"
-                className="align-right mx-3 img-fluid rounded-circle"
-                />
-          <strong>{parseFloat(appleBalance4).toFixed(2)} APPL</strong></h6>
-            </ListGroup.Item>
-            <ListGroup.Item className='bg-warning bg-gradient bg-opacity-25'>
-          <h6 className='my-1'>
-                          <img
-                alt="dapp/apple-pair"
-                src={TokenPair3}
-                width="70"
-                height="40"
-                className="align-right mx-3 img-fluid rounded"
-                />
-          <strong>Rate: {parseFloat(price6).toFixed(2)}</strong></h6>
-            </ListGroup.Item>
-         </ListGroup> 
-            </Card>
-          </div>
-        </Collapse>
-      </div>
-    </Col>
     </>
   </Col>
 </Row>

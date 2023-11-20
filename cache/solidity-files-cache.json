@@ -112,8 +112,8 @@
       ]
     },
     "/home/arcturian/aggregator/contracts/Aggregator.sol": {
-      "lastModificationDate": 1700466979338,
-      "contentHash": "bdd557256ea31e9fbad8da56cbeb0336",
+      "lastModificationDate": 1700518057806,
+      "contentHash": "ed673f13463b1c5f1cae8839d035996f",
       "sourceName": "contracts/Aggregator.sol",
       "solcConfig": {
         "version": "0.8.9",

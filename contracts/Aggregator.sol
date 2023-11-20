@@ -33,21 +33,16 @@ interface IUniswapV2ERC20 {
 contract Aggregator {
     IWETH public dai;
     IWETH public weth;
-    IWETH public USDC;
-    IWETH public USDT;
 
     address public owner;
 
     address public constant wethAddress = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-    address public constant USDCAddress = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-    address public constant USDTAddress = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
 
     address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
     address public constant wethDAIpool = 0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11;
-    address public constant daiWETHpool2 = 0x60594a405d53811d3BC4766596EFD80fd545A270;
 
-    address public constant sushiDaiWethPool = 0xC3D03e4F041Fd4cD388c549Ee2A29a9E5075882f ;
+    address public constant sushiDaiWethPool = 0xC3D03e4F041Fd4cD388c549Ee2A29a9E5075882f;
 
     address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address public constant sushiswapV2Router = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
@@ -63,13 +58,11 @@ contract Aggregator {
     uint256 public pool3daiBalance;
     uint256 public pool3wethBalance;
     uint256 public pool4daiBalance;
-    uint256 public pool4wethBalance;
 
     uint256 public K;
     uint256 public K1;
     uint256 public K2;
     uint256 public K3;
-    uint256 public K4;
 
     uint256 public totalShares;
     mapping(address => uint256) public shares;
@@ -87,6 +80,8 @@ contract Aggregator {
     );
 
     constructor() {
+
+        // Uniswap DAI / WETH Balances
         pool1daiBalance = IWETH(daiAddress).balanceOf(daiWETHpool);
         pool1wethBalance = IWETH(wethAddress).balanceOf(daiWETHpool);
         pool2daiBalance = IWETH(daiAddress).balanceOf(wethDAIpool);
@@ -95,13 +90,11 @@ contract Aggregator {
         K1 = pool1daiBalance * pool1wethBalance;
         K2 = pool2daiBalance * pool2wethBalance;
         
+        // Sushiswap DAI / WETH Balances
         pool3daiBalance = IWETH(daiAddress).balanceOf(sushiDaiWethPool);
         pool3wethBalance = IWETH(wethAddress).balanceOf(sushiDaiWethPool);
-        pool4daiBalance = IWETH(daiAddress).balanceOf(sushiDaiWethPool);
-        pool4wethBalance = IWETH(wethAddress).balanceOf(sushiDaiWethPool);
         
         K3 = pool3daiBalance * pool3wethBalance;
-        K4 = pool4daiBalance * pool4wethBalance;
 
         owner = msg.sender;
         uRouter = IUniswapV2Router02(uniswapV2Router);
@@ -142,6 +135,40 @@ contract Aggregator {
             }
 
             require(token1Amount < pool2daiBalance, "swap amount too large");
+    }
+
+    function calculateSushiDai(uint256 _token1Amount)
+        public
+        view
+        returns (uint256 token2Amount)
+        {
+            uint256 token1After = pool3daiBalance + _token1Amount;
+            uint256 token2After = K3 / token1After;
+            token2Amount = pool3wethBalance - token2After;
+
+            // Don't let the pool go to 0
+            if (token2Amount == pool3wethBalance) {
+                token2Amount--;
+            }
+
+            require(token2Amount < pool3wethBalance, "swap amount too large");
+    }
+
+    function calculateSushiWeth(uint256 _token2Amount)
+        public
+        view
+        returns (uint256 token1Amount)
+        {
+            uint256 token2After = pool3wethBalance + _token2Amount;
+            uint256 token1After = K3 / token2After;
+            token1Amount = pool3daiBalance - token1After;
+
+            // Don't let the pool go to 0
+            if (token1Amount == pool3daiBalance) {
+                token1Amount--;
+            }
+
+            require(token1Amount < pool3daiBalance, "swap amount too large");
     }
 
     // Enact DAI / WETH Swap on Testnet
