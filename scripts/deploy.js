@@ -9,49 +9,10 @@ const hre = require("hardhat");
 async function main() {
   const Token = await hre.ethers.getContractFactory('Token')
 
-  // Deploy Token 1 - Dapp Token
-  let dapp = await Token.deploy('Dapp Token', 'DAPP', '1000000') // 1 million tokens
-  await dapp.deployed()
-  console.log(`Dapp Token deployed to: ${dapp.address}\n`)
-
-  // Deploy Token 2 - USD Token
-  const usd = await Token.deploy('USD Token', 'USD', '1000000') // 1 million tokens
-  await usd.deployed()
-  console.log(`USD Token deployed to: ${usd.address}\n`)
-
-  // Add a Token 3 - Apple Token
-  const apple = await Token.deploy('Apple Token', 'APPL', '1000000') // 1 million tokens
-  await apple.deployed()
-  console.log(`Apple Token deployed to: ${apple.address}\n`)
-
-  
-  // Deploy AMM & Aggregator Contracts
-  const AMM = await hre.ethers.getContractFactory('AMM')
   const Aggregator = await hre.ethers.getContractFactory('Aggregator')
 
-  // Deploy DAPP / USD liquidity pools
-  const dappDappUSD = await AMM.deploy(dapp.address, usd.address)
-  const appleDappUSD = await AMM.deploy(dapp.address, usd.address)
-  
   // COME BACK - No need for this
   const aggregator = await Aggregator.deploy()
-
-  // Deploy APPL / USD liquidity pools
-  const dappAppleUSD = await AMM.deploy(apple.address, usd.address)
-  const appleAppleUSD = await AMM.deploy(apple.address, usd.address)
-
-  // Deploy DAPP / APPL liquidity pools
-  const dappDappApple = await AMM.deploy(dapp.address, apple.address)
-  const appleDappApple = await AMM.deploy(dapp.address, apple.address)
-
-  console.log(`DAPP / USD pool on DApp Swap deployed to: ${dappDappUSD.address}\n`)
-  console.log(`DAPP / USD pool on AppleSwap deployed to: ${appleDappUSD.address}\n`)
-
-  console.log(`APPL / USD pool on Dapp Swap deployed to: ${dappAppleUSD.address}\n`)
-  console.log(`APPL / USD pool on Apple Swap deployed to: ${appleAppleUSD.address}\n`)
-
-  console.log(`DAPP / APPL pool on Dapp Swap deployed to: ${dappDappApple.address}\n`)
-  console.log(`DAPP / APPL pool on Apple Swap deployed to: ${appleDappApple.address}\n`)
 
   console.log(`Aggregator contract deployed to: ${aggregator.address}\n`)
 

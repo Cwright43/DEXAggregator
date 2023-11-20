@@ -261,7 +261,7 @@ export const removeLiquidity = async (provider, amm, shares, dispatch) => {
 // --------------------------------------//
 
 // Swap Functionality
-export const swap = async (provider, _amm, token1, inputSymbol, outputSymbol, amount, dispatch) => {
+export const swap = async (provider, _amm, dexProtocol, token1, inputSymbol, outputSymbol, amount, dispatch) => {
   try {
 
     dispatch(swapRequest())
@@ -273,10 +273,21 @@ export const swap = async (provider, _amm, token1, inputSymbol, outputSymbol, am
     await transaction.wait()
 
   if ((inputSymbol === "DAI") && (outputSymbol === "WETH"))  {
-      transaction = await _amm.connect(signer).sushiswap1(amount)
+        if(dexProtocol === 1) {
+          console.log("Uniswap - DAI / WETH")
+      transaction = await _amm.connect(signer).uniswap1(amount)
+        } else if (dexProtocol === 2) {
+          console.log("Sushiswap - DAI / WETH")
+          transaction = await _amm.connect(signer).sushiswap1(amount)
+        }
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-      console.log("Test A")
+      if(dexProtocol === 1) {
+        console.log("Uniswap - WETH / DAI")
+      transaction = await _amm.connect(signer).uniswap2(amount)
+      } else if (dexProtocol === 2) {
+        console.log("Sushiswap - WETH / DAI")
       transaction = await _amm.connect(signer).sushiswap2(amount)
+      }
     } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await _amm.connect(signer).swapToken1(amount)
     } else {

@@ -52,12 +52,11 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   const [flagUniswap, setFlagUniswap] = useState(false)
   const [flagSushiswap, setFlagSushiswap] = useState(false)
 
-
-
   // Load Other Stuff
 
   const [price, setPrice] = useState(0)
   const [protocol, setProtocol] = useState(0)
+  const [dexProtocol, setDexProtocol] = useState(0)
 
   const [showAlert, setShowAlert] = useState(false)
 
@@ -98,6 +97,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
     console.log(`Active AMM Address: ${amm.address}`)
     console.log(`Active Symbol (1): ${symbols}`)
+    console.log(`Uni / Sushi Protocol: ${dexProtocol}`)
 }
 
   const inputHandler = async (e) => {
@@ -125,17 +125,31 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     if (inputToken === 'DAI' || outputToken === 'WETH' ) {
       setInputAmount(e.target.value)
       const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await aggregator.calculateDaiSwap(_token1Amount)
-      const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
-      setOutputAmount(_token2Amount.toString())
-      setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+      if (dexProtocol === 1) {
+        const result = await aggregator.calculateDaiSwap(_token1Amount)
+        const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+        setOutputAmount(_token2Amount.toString())
+        setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+      } else if (dexProtocol === 2) {
+        const result = await aggregator.calculateSushiDai(_token1Amount)
+        const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+        setOutputAmount(_token2Amount.toString())
+        setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+      }
     } else if (inputToken === 'WETH' || outputToken === 'DAI') {
       setInputAmount(e.target.value)
-      const _token2Amount = ethers.utils.parseUnits(e.target.value, 'ether')
-      const result = await aggregator.calculateWethSwap(_token2Amount)
-      const _token1Amount = ethers.utils.formatUnits(result.toString(), 'ether')
-      setOutputAmount(_token1Amount.toString())
-      setExchangeRate((_token1Amount/_token2Amount) * 10e17)
+      const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
+      if (dexProtocol === 1) {
+        const result = await aggregator.calculateWethSwap(_token1Amount)
+        const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+        setOutputAmount(_token2Amount.toString())
+        setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+      } else if (dexProtocol === 2) {
+        const result = await aggregator.calculateSushiWeth(_token1Amount)
+        const _token2Amount = ethers.utils.formatUnits(result.toString(), 'ether')
+        setOutputAmount(_token2Amount.toString())
+        setExchangeRate((_token2Amount/_token1Amount) * 10e17)
+      }
       } else if (protocol === 1) {
       setInputAmount(e.target.value)
       const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
@@ -168,9 +182,9 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       await loadTokens(provider, chainId, dispatch);
 
       if (inputToken === 'DAI' && outputToken === 'WETH') {
-        await swap(provider, aggregator, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
+        await swap(provider, aggregator, dexProtocol, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
       } else if (inputToken === 'WETH' && outputToken === 'DAI') {
-        await swap(provider, aggregator, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+        await swap(provider, aggregator, dexProtocol, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
       } else if (protocol === 1) {
         await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
       } else if (protocol === 2) {
@@ -189,6 +203,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     setFlagDapp(false)
     setFlagUniswap(false)
     setFlagSushiswap(false)
+    setDexProtocol(0)
 
     if (inputToken === outputToken) {
       setPrice(0)
@@ -239,17 +254,21 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     if ((poolDAI2 / poolWETH2) > (poolDAI / poolWETH)) {
       console.log("SushiSwap WINS")
       setFlagSushiswap(true)
+      setDexProtocol(2)
     } else {
       console.log("UniSwap WINS")
       setFlagUniswap(true)
+      setDexProtocol(1)
     }
 } else if (inputToken === 'WETH' && outputToken === 'DAI') {
     if ((poolDAI3 / poolWETH3) > (poolDAI1 / poolWETH1)) {
       console.log("SushiSwap WINS")
       setFlagSushiswap(true)
+      setDexProtocol(2)
     } else {
       console.log("UniSwap WINS")
       setFlagUniswap(true)
+      setDexProtocol(1)
     }
  }
 
