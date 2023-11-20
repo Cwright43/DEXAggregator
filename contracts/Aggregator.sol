@@ -21,16 +21,6 @@ interface IWETH is IERC20 {
 
 }
 
-interface IERC20_USDT {
-
-    function balanceOf(address account) external view returns (uint256);
-}
-
-interface IERC20_USDC {
-
-    function balanceOf(address account) external view returns (uint256);
-}
-
 interface IUniswapV2ERC20 {
 
     function transfer(address to, uint value ) external returns (bool);
@@ -55,15 +45,9 @@ contract Aggregator {
 
     address public constant daiWETHpool = 0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8;
     address public constant wethDAIpool = 0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11;
+    address public constant daiWETHpool2 = 0x60594a405d53811d3BC4766596EFD80fd545A270;
 
-    address public constant wethUSDTpool = 0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852;
-
-    address public constant pancakeDaiWeth = 0x17C1Ae82D99379240059940093762c5e4539aba5;
-
-    address public constant pancakeUSDCWeth = 0x2E8135bE71230c6B1B4045696d41C09Db0414226;
-
-    address public constant sushiDaiWethPool = 0x4D734eAF2102407825f45571D51FC7C4DaE86fF8;
-    address public constant sushiWethDaiPool = 0x6FF62bfb8c12109E8000935A6De54daD83a4f39f;
+    address public constant sushiDaiWethPool = 0xC3D03e4F041Fd4cD388c549Ee2A29a9E5075882f ;
 
     address public constant uniswapV2Router = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address public constant sushiswapV2Router = 0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F;
@@ -111,10 +95,10 @@ contract Aggregator {
         K1 = pool1daiBalance * pool1wethBalance;
         K2 = pool2daiBalance * pool2wethBalance;
         
-        pool3daiBalance = IERC20_USDT(USDTAddress).balanceOf(wethUSDTpool);
-        pool3wethBalance = IWETH(wethAddress).balanceOf(wethUSDTpool);
-        pool4daiBalance = IERC20_USDC(USDCAddress).balanceOf(pancakeUSDCWeth);
-        pool4wethBalance = IWETH(wethAddress).balanceOf(pancakeUSDCWeth);
+        pool3daiBalance = IWETH(daiAddress).balanceOf(sushiDaiWethPool);
+        pool3wethBalance = IWETH(wethAddress).balanceOf(sushiDaiWethPool);
+        pool4daiBalance = IWETH(daiAddress).balanceOf(sushiDaiWethPool);
+        pool4wethBalance = IWETH(wethAddress).balanceOf(sushiDaiWethPool);
         
         K3 = pool3daiBalance * pool3wethBalance;
         K4 = pool4daiBalance * pool4wethBalance;
@@ -234,6 +218,79 @@ contract Aggregator {
             );
     }
 
+    function sushiswap1(uint256 _token1Amount)
+        external
+        returns(uint256 token2Amount)
+        {
+
+            // Use the money here!
+            address[] memory path = new address[](2);
+
+            path[0] = daiAddress;
+            path[1] = wethAddress;
+
+            // Do Swap
+            IUniswapV2ERC20(daiAddress).transferFrom(msg.sender, address(this), _token1Amount);
+
+            _swapOnSushiswap(path, _token1Amount, 0);
+
+            token2Amount = IERC20(wethAddress).balanceOf(address(this));
+
+            pool3daiBalance += _token1Amount;
+            pool3wethBalance -= token2Amount;
+
+            IUniswapV2ERC20(wethAddress).transfer(msg.sender, token2Amount);
+
+            // Emit an event
+            emit Swap(
+                msg.sender,
+                address(daiAddress),
+                _token1Amount,
+                address(wethAddress),
+                token2Amount,
+                pool1daiBalance,
+                pool1wethBalance,
+                block.timestamp
+            );
+    }
+
+    function sushiswap2(uint256 _token2Amount)
+        external
+        returns(uint256 token1Amount)
+        {
+
+            // Use the money here!
+            address[] memory path = new address[](2);
+
+            path[0] = wethAddress;
+            path[1] = daiAddress;
+
+            // Do Swap
+            IUniswapV2ERC20(wethAddress).transferFrom(msg.sender, address(this), _token2Amount);
+
+            _swapOnSushiswap(path, _token2Amount, 0);
+
+            token1Amount = IERC20(daiAddress).balanceOf(address(this));
+
+            pool3wethBalance += _token2Amount;
+            pool3daiBalance -= token1Amount;
+
+            IUniswapV2ERC20(daiAddress).transfer(msg.sender, token1Amount);
+            
+            // Emit an event
+            emit Swap(
+                msg.sender,
+                address(wethAddress),
+                _token2Amount,
+                address(daiAddress),
+                token1Amount,
+                pool2daiBalance,
+                pool2wethBalance,
+                block.timestamp
+            );
+    }
+
+
     // Special Internal Function for Uniswap Testnet Functionality
     function _swapOnUniswap(
         address[] memory _path,
@@ -246,6 +303,25 @@ contract Aggregator {
             );
 
             uRouter.swapExactTokensForTokens(
+                _amountIn,
+                _amountOut,
+                _path,
+                address(this),
+                (block.timestamp + 1200)
+            );
+    }
+
+    function _swapOnSushiswap(
+        address[] memory _path,
+        uint256 _amountIn,
+        uint256 _amountOut
+        ) internal {
+            require(
+                IERC20(_path[0]).approve(address(sRouter), _amountIn),
+                "Sushiswap approval failed."
+            );
+
+            sRouter.swapExactTokensForTokens(
                 _amountIn,
                 _amountOut,
                 _path,

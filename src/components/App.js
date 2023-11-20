@@ -17,6 +17,7 @@ import appleIcon from '../apple.jpeg';
 import wethIcon from '../WETH.png';
 import daiIcon from '../DAI.png';
 import uniswapLogo from '../uniswap.png';
+import sushiswapLogo from '../sushiswap.png';
 import backgroundimage from '../Background.jpeg';
 
 // Components
@@ -107,6 +108,12 @@ function App() {
   const [price5, setPrice5] = useState(0)
   const [price6, setPrice6] = useState(0)
 
+  const [uniswapPrice1, setUniswapPrice1] = useState(0)
+  const [uniswapPrice2, setUniswapPrice2] = useState(0)
+
+  const [sushiswapPrice1, setSushiswapPrice1] = useState(0)
+  const [sushiswapPrice2, setSushiswapPrice2] = useState(0)
+
   // Load DAI/WETH Balances from Mainnet
     const poolDAI = useSelector(state => state.amm.poolDAI)
     const poolWETH = useSelector(state => state.amm.poolWETH)
@@ -183,11 +190,11 @@ function App() {
     const appleDappApple = new ethers.Contract(config[1].appleDappApple.address, AMM_ABI, provider)
     setAppleDappApple(appleDappApple)
 
-    // Load Dapp DAI / WETH Pool Address
+    // Load Dapp DAI / WETH Pool Address - KEEP??
     const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
     setDaiWethUniswap(daiWethUniswap)
 
-  // Load UniswapV2 Router Address
+  // Load UniswapV2 Router Address - KEEP??
     const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
     setRouter(router)
 
@@ -301,6 +308,23 @@ function App() {
 
       let price6 = appleBalance4 / dappBalance4
       setPrice6(price6)
+
+      // (DAI / WETH) - Uniswap
+      let uniswapPrice1 = (poolDAI / poolWETH)
+      setUniswapPrice1(uniswapPrice1)
+
+      // (WETH / DAI) - Uniswap
+      let uniswapPrice2 = (poolDAI1 / poolWETH1)
+      setUniswapPrice2(uniswapPrice2)
+  
+      // (DAI / WETH) - Sushiswap
+      let sushiswapPrice1 = (poolDAI2 / poolWETH2)
+      setSushiswapPrice1(sushiswapPrice1)
+
+      // (WETH / DAI) - Sushiswap
+      let sushiswapPrice2 = (poolDAI3 / poolWETH3)
+      setSushiswapPrice2(sushiswapPrice2)
+
   }
 
   useEffect(() => {
@@ -328,15 +352,19 @@ function App() {
   <h4 className="text-center text-white">Uniswap Balances</h4>
   <h5 className="text-center text-white">Total DAI in DAI / WETH: {parseFloat(poolDAI).toFixed(2)}</h5>
   <h5 className="text-center text-white">Total WETH in DAI / WETH: {parseFloat(poolWETH).toFixed(2)}</h5>
+  <h5 className="text-center text-white">Rate 1: {parseFloat(poolDAI / poolWETH).toFixed(2)}</h5>
   <h5 className="text-center text-white">Total DAI in WETH / DAI: {parseFloat(poolDAI1).toFixed(2)}</h5>
   <h5 className="text-center text-white">Total WETH in WETH / DAI: {parseFloat(poolWETH1).toFixed(2)}</h5>
+  <h5 className="text-center text-white">Rate 2: {parseFloat(poolDAI1 / poolWETH1).toFixed(2)}</h5>
   </Col>
   <Col>
   <h4 className="text-center text-warning">Sushiswap Balances</h4>
   <h5 className="text-center text-warning">Total DAI in DAI / WETH: {parseFloat(poolDAI2).toFixed(2)}</h5>
   <h5 className="text-center text-warning">Total WETH in DAI / WETH: {parseFloat(poolWETH2).toFixed(2)}</h5>
+  <h5 className="text-center text-warning">Rate 1: {parseFloat(poolDAI2 / poolWETH2).toFixed(2)}</h5>
   <h5 className="text-center text-warning">Total DAI in WETH / DAI: {parseFloat(poolDAI3).toFixed(2)}</h5>
   <h5 className="text-center text-warning">Total WETH in WETH / DAI: {parseFloat(poolWETH3).toFixed(2)}</h5>
+  <h5 className="text-center text-warning">Rate 2: {parseFloat(poolDAI3 / poolWETH3).toFixed(2)}</h5>
   </Col>
 </Row>
 <Row>
@@ -711,6 +739,10 @@ function App() {
                                           price4={price4}
                                           price5={price5}
                                           price6={price6}
+                                          uniswapPrice1={uniswapPrice1}
+                                          uniswapPrice2={uniswapPrice2}
+                                          sushiswapPrice1={sushiswapPrice1}
+                                          sushiswapPrice2={sushiswapPrice2}
                                           />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
@@ -766,6 +798,21 @@ function App() {
             />
 
         Uniswap</h4>
+
+        <h4 className='my-1 text-center p-3 mb-2 bg-gradient rounded-5'       
+          style={{ 
+            alignItems: 'center', justifyContent: 'center', 
+            width: '1296px', height: '55px', display: 'flex'
+          }}> 
+            <img
+            alt="sushiswapLogo"
+            src={sushiswapLogo}
+            width="60"
+            height="60"
+            className="align-center mx-3 img-fluid rounded-circle"
+            />
+
+        Sushiswap</h4>
 
         </div>
 

@@ -14,6 +14,7 @@ import { ethers } from 'ethers'
 import dappIcon from '../dapp-swap.png';
 import appleIcon from '../apple.jpeg';
 import uniswapLogo from '../uniswap.png';
+import sushiswapLogo from '../sushiswap.png';
 
 import Alert from './Alert'
 
@@ -36,7 +37,8 @@ import {
 
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
                 daiAccountBalance, wethAccountBalance,
-                price1, price2, price3, price4, price5, price6
+                price1, price2, price3, price4, price5, price6,
+                uniswapPrice1, uniswapPrice2, sushiswapPrice1, sushiswapPrice2
               }) => {
 
   const [inputToken, setInputToken] = useState(null)
@@ -48,6 +50,22 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   const [flagDapp, setFlagDapp] = useState(false)
   const [flagApple, setFlagApple] = useState(false)
   const [flagUniswap, setFlagUniswap] = useState(false)
+  const [flagSushiswap, setFlagSushiswap] = useState(false)
+
+  // Load DAI/WETH Balances from Mainnet
+  const poolDAI = useSelector(state => state.amm.poolDAI)
+  const poolWETH = useSelector(state => state.amm.poolWETH)
+
+  const poolDAI1 = useSelector(state => state.amm.poolDAI1)
+  const poolWETH1 = useSelector(state => state.amm.poolWETH1)
+
+  const poolDAI2 = useSelector(state => state.amm.poolDAI2)
+  const poolWETH2 = useSelector(state => state.amm.poolWETH2)
+
+  const poolDAI3 = useSelector(state => state.amm.poolDAI3)
+  const poolWETH3 = useSelector(state => state.amm.poolWETH3)
+
+  // Load Other Stuff
 
   const [price, setPrice] = useState(0)
   const [protocol, setProtocol] = useState(0)
@@ -168,6 +186,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     setFlagApple(false)
     setFlagDapp(false)
     setFlagUniswap(false)
+    setFlagSushiswap(false)
 
     if (inputToken === outputToken) {
       setPrice(0)
@@ -210,9 +229,27 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   } else if ((inputToken === 'DAI' && outputToken === 'WETH') || (inputToken === 'WETH' && outputToken === 'DAI')) {
     await loadDaiWETH(provider, chainId, dispatch);
     await loadDaiWethBalances(aggregator, dispatch);
-    console.log("Uniswap WINS");
-    setFlagUniswap(true);
+    // console.log("Uniswap WINS");
+    // setFlagUniswap(true);
   }
+
+  if (inputToken === 'DAI' && outputToken === 'WETH') {
+    if ((poolDAI2 / poolWETH2) > (poolDAI / poolWETH)) {
+      console.log("SushiSwap WINS")
+      setFlagSushiswap(true)
+    } else {
+      console.log("UniSwap WINS")
+      setFlagUniswap(true)
+    }
+} else if (inputToken === 'WETH' && outputToken === 'DAI') {
+    if ((poolDAI3 / poolWETH3) > (poolDAI1 / poolWETH1)) {
+      console.log("SushiSwap WINS")
+      setFlagSushiswap(true)
+    } else {
+      console.log("UniSwap WINS")
+      setFlagUniswap(true)
+    }
+ }
 
   if (inputToken === 'DAPP' && outputToken === 'USD') {
         if (price2 > price1) {
@@ -331,6 +368,19 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         <img
         alt="uniswapLogo"
         src={uniswapLogo}
+        width="60"
+        height="60"
+        className="text-center mx-3 rounded-circle"
+        />
+    </h5>
+      )}
+      {flagSushiswap && (
+    <h5 className='d-flex justify-content-center align-items-center text-warning my-3 body rounded-5'
+>
+      Routing: Sushiswap
+        <img
+        alt="sushiswapLogo"
+        src={sushiswapLogo}
         width="60"
         height="60"
         className="text-center mx-3 rounded-circle"
