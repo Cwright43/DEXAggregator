@@ -273,13 +273,13 @@ export const swap = async (provider, _amm, dexProtocol, token1, inputSymbol, out
           transaction = await _amm.connect(signer).sushiswap1(amount)
         }
     } else if ((inputSymbol === "WETH") && (outputSymbol === "DAI")) {
-      if(dexProtocol === 1) {
-        console.log("Uniswap - WETH / DAI")
-      transaction = await _amm.connect(signer).uniswap2(amount)
-      } else if (dexProtocol === 2) {
-        console.log("Sushiswap - WETH / DAI")
-      transaction = await _amm.connect(signer).sushiswap2(amount)
-      }
+        if(dexProtocol === 1) {
+          console.log("Uniswap - WETH / DAI")
+        transaction = await _amm.connect(signer).uniswap2(amount)
+        } else if (dexProtocol === 2) {
+          console.log("Sushiswap - WETH / DAI")
+        transaction = await _amm.connect(signer).sushiswap2(amount)
+        }
     } else if ((inputSymbol === "DAPP") || (inputSymbol === "APPL" && outputSymbol === "USD")) {
       transaction = await _amm.connect(signer).swapToken1(amount)
     } else {

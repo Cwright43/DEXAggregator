@@ -96,6 +96,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
     console.log(`Active AMM Address: ${amm.address}`)
     console.log(`Active Symbol (1): ${symbols}`)
+    console.log(`DAPP / USD / APPL Protocol: ${protocol}`)
     console.log(`Uni / Sushi Protocol: ${dexProtocol}`)
 }
 
@@ -185,9 +186,9 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       } else if (inputToken === 'WETH' && outputToken === 'DAI') {
         await swap(provider, aggregator, dexProtocol, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
       } else if (protocol === 1) {
-        await swap(provider, amm, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
+        await swap(provider, amm, dexProtocol, tokens[0], inputToken, outputToken, _inputAmount, dispatch)
       } else if (protocol === 2) {
-        await swap(provider, amm, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
+        await swap(provider, amm, dexProtocol, tokens[1], inputToken, outputToken, _inputAmount, dispatch)
       }
 
     await loadBalances(amm, tokens, account, dispatch)
@@ -202,6 +203,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     setFlagDapp(false)
     setFlagUniswap(false)
     setFlagSushiswap(false)
+    setProtocol(0)
     setDexProtocol(0)
 
     if (inputToken === outputToken) {
@@ -224,11 +226,12 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
       // Declare Protocol From Token Pair Orientation
         if ((inputToken === 'DAPP' && outputToken === 'USD') ||
             (inputToken === 'APPL' && outputToken === 'USD') ||
-            (inputToken === 'DAPP' && outputToken === 'APPL') || 
-            (inputToken === 'DAI' && outputToken === 'WETH'))
-              {
-               setProtocol(1)
-              } else {
+            (inputToken === 'DAPP' && outputToken === 'APPL')) { 
+              setProtocol(1)
+      } else if (
+            (inputToken === 'USD' && outputToken === 'DAPP') ||
+            (inputToken === 'USD' && outputToken === 'APPL') ||
+            (inputToken === 'APPL' && outputToken === 'DAPP')) {
                setProtocol(2)
               }
 
@@ -245,8 +248,6 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   } else if ((inputToken === 'DAI' && outputToken === 'WETH') || (inputToken === 'WETH' && outputToken === 'DAI')) {
     await loadDaiWETH(provider, chainId, dispatch);
     await loadDaiWethBalances(aggregator, dispatch);
-    // console.log("Uniswap WINS");
-    // setFlagUniswap(true);
   }
 
   if (inputToken === 'DAI' && outputToken === 'WETH') {
