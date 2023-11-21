@@ -38,7 +38,6 @@ import {
 const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance, 
                 daiAccountBalance, wethAccountBalance,
                 price1, price2, price3, price4, price5, price6,
-                uniswapPrice1, uniswapPrice2, sushiswapPrice1, sushiswapPrice2
               }) => {
 
   const [inputToken, setInputToken] = useState(null)

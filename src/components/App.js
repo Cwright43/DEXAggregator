@@ -32,9 +32,6 @@ import Charts from './Charts';
 import T1Icon from '../T1-Icon.png';
 import T2Icon from '../T2-Icon.jpg';
 import T3Icon from '../T3-Icon.jpg';
-import TokenPair from '../TokenPair.jpg';
-import TokenPair2 from '../TokenPair2.png';
-import TokenPair3 from '../TokenPair3.png';
 
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
@@ -66,8 +63,6 @@ function App() {
   const [apple, setApple] = useState(null)
   const [dai, setDAI] = useState(null)
   const [weth, setWETH] = useState(null)
-  const [daiWethUniswap, setDaiWethUniswap] = useState(null)
-  const [router, setRouter] = useState(null)
 
   // Assign Active User Account and Signer
   const [account, setAccount] = useState(null)
@@ -183,14 +178,6 @@ function App() {
 
     const appleDappApple = new ethers.Contract(config[1].appleDappApple.address, AMM_ABI, provider)
     setAppleDappApple(appleDappApple)
-
-    // Load Dapp DAI / WETH Pool Address - KEEP??
-    const daiWethUniswap = new ethers.Contract(config[1].daiWethUniswap.address, AMM_ABI, provider)
-    setDaiWethUniswap(daiWethUniswap)
-
-  // Load UniswapV2 Router Address - KEEP??
-    const router = new ethers.Contract('0x7a250d5630b4cf539739df2c5dacb4c659f2488d', routerArtifact.abi, provider)
-    setRouter(router)
 
     // Initiate Token contracts
     let usd = new ethers.Contract(config[1].usd.address, TOKEN_ABI, provider)
@@ -339,26 +326,9 @@ function App() {
         <Navigation />
 <Row>
   <Col>
-  <h4 className="text-center text-white">Uniswap Balances</h4>
-  <h5 className="text-center text-white">Total DAI in DAI / WETH: {parseFloat(poolDAI).toFixed(2)}</h5>
-  <h5 className="text-center text-white">Total WETH in DAI / WETH: {parseFloat(poolWETH).toFixed(2)}</h5>
-  <h5 className="text-center text-white">Rate 1: {parseFloat(poolDAI / poolWETH).toFixed(2)}</h5>
-  <h5 className="text-center text-white">Total DAI in WETH / DAI: {parseFloat(poolDAI1).toFixed(2)}</h5>
-  <h5 className="text-center text-white">Total WETH in WETH / DAI: {parseFloat(poolWETH1).toFixed(2)}</h5>
-  <h5 className="text-center text-white">Rate 2: {parseFloat(poolDAI1 / poolWETH1).toFixed(2)}</h5>
-  </Col>
-  <Col>
-  <h4 className="text-center text-warning">Sushiswap Balances</h4>
-  <h5 className="text-center text-warning">Total DAI in DAI / WETH: {parseFloat(poolDAI2).toFixed(2)}</h5>
-  <h5 className="text-center text-warning">Total WETH in DAI / WETH: {parseFloat(poolWETH2).toFixed(2)}</h5>
-  <h5 className="text-center text-warning">Rate 1: {parseFloat(poolDAI2 / poolWETH2).toFixed(2)}</h5>
-  </Col>
-</Row>
-<Row>
-  <Col>
 
     <>
- <h6 className='bg-gradient rounded-5 text-white { opacity: 0.1 }' style={{ width: '660px', color: 'white', textAlign: 'center'}}>
+ <h4 className='bg-gradient rounded-5 text-white { opacity: 0.1 }' style={{ width: '660px', color: 'white', textAlign: 'center'}}>
       <img
         alt="uniswapLogo"
         src={uniswapLogo}
@@ -366,7 +336,7 @@ function App() {
         height="60"
         className="align-right mx-3 img-fluid hover-overlay text-center"
         /> Uniswap
-  </h6>
+  </h4>
   <Row>
     <Col>
       <Button
@@ -496,7 +466,7 @@ function App() {
   <Col>
 
     <>
- <h6 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
+ <h4 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
       <img
         alt="sushiswapLogo"
         src={sushiswapLogo}
@@ -504,7 +474,7 @@ function App() {
         height="60"
         className="align-right mx-3 img-fluid hover-overlay rounded-circle"
         /> Sushiswap
-  </h6>
+  </h4>
 <Row>
     <Col>
       <Button
@@ -600,7 +570,7 @@ function App() {
         </Routes>
 
         <h1></h1>
-        <h3 className='my-4 text-center text'>Participating Exchanges:</h3>
+        <h3 className='my-4 text-center text-warning'>Participating Exchanges:</h3>
 
         <div style={{ textAlign: "center" }}>
  

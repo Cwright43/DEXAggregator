@@ -36,9 +36,6 @@
     },
     "weth": {
       "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-    },
-    "daiWethUniswap": {
-      "address": "0xC2e9F25Be6257c210d7Adf0D4Cd6E3E881ba25f8"
     }
   }
 

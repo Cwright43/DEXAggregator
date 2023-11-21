@@ -159,14 +159,6 @@ export const loadDaiWETH = async (provider, chainId, dispatch) => {
     return amm
   }
 
-  // Load (DAI / WETH) Address
-  export const loadUniswap = async (provider, chainId, dispatch) => {
-    const amm = new ethers.Contract(config[chainId].daiWethUniswap.address, AMM_ABI, provider)
-
-    dispatch(setContract(amm))
-    return amm
-  }
-
 // --------------------------------------//
 //        Load Balances and Shares       //
 // --------------------------------------//
