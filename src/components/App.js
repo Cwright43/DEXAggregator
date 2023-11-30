@@ -28,11 +28,6 @@ import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 import Charts from './Charts';
 
-// Token icons - KEEP?
-import T1Icon from '../T1-Icon.png';
-import T2Icon from '../T2-Icon.jpg';
-import T3Icon from '../T3-Icon.jpg';
-
 // ABIs: Import your contract ABIs here
 import AMM_ABI from '../abis/AMM.json'
 import TOKEN_ABI from '../abis/Token.json'
@@ -316,11 +311,11 @@ function App() {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       width: '100vw',
-      height: '100vh'
+      height: '135vh'
       }}>
     <Container>
   
-    <style>{'body { background-color: rgb(20, 240, 120); opacity: 1; }'}</style>
+    <style>{'body { background-color: rgb(0, 0, 255); opacity: 1; }'}</style>
 
       <HashRouter>
         <Navigation />
@@ -390,7 +385,7 @@ function App() {
                 height="30"
                 className="align-right img-fluid rounded"
                 />
-          <strong className="mx-3">       Rate: {parseFloat( poolDAI / poolWETH ).toFixed(2)}</strong></h6>
+          <strong className="mx-3">       Rate: {parseFloat( poolWETH / poolDAI ).toFixed(5)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -451,7 +446,7 @@ function App() {
                 height="30"
                 className="align-right img-fluid rounded"
                 />
-          <strong className="mx-3">Rate: {parseFloat( poolWETH1 / poolDAI1 ).toFixed(5)}</strong></h6>
+          <strong className="mx-3">Rate: {parseFloat( poolDAI1 / poolWETH1 ).toFixed(2)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -464,7 +459,6 @@ function App() {
     </>
   </Col>
   <Col>
-
     <>
  <h4 className='bg-gradient rounded-5 text-white' style={{ width: '660x', color: 'white', textAlign: 'center'}}>
       <img
@@ -528,7 +522,7 @@ function App() {
                 height="30"
                 className="align-right img-fluid rounded"
                 />
-          <strong className="mx-3">Rate: {parseFloat(poolDAI2 / poolWETH2).toFixed(2)}</strong></h6>
+          <strong className="mx-3">Rate: {parseFloat(poolWETH2 / poolDAI2).toFixed(5)}</strong></h6>
             </ListGroup.Item>
          </ListGroup> 
             </Card>
@@ -572,7 +566,7 @@ function App() {
         <h1></h1>
         <h3 className='my-4 text-center text-warning'>Participating Exchanges:</h3>
 
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center" }} className='text-warning'>
  
         <h4 className='my-1 text-center p-3 mb-2 bg-gradient rounded-5'
           style={{ 

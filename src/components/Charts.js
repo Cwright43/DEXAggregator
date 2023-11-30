@@ -7,11 +7,7 @@ import { options, series } from './Charts.config';
 import { chartSelector } from '../store/selectors';
 import { useEffect } from 'react'
 
-import dappIcon from '../dapp-swap.png';
-import appleIcon from '../apple.jpeg';
-
 import Loading from './Loading';
-import Swap from './Swap';
 
 import {
   loadAllSwaps
@@ -19,12 +15,9 @@ import {
 
 const Charts = () => {
   const provider = useSelector(state => state.provider.connection)
-
   const tokens = useSelector(state => state.tokens.contracts)
   const symbols = useSelector(state => state.tokens.symbols)
- 
   const amm = useSelector(state => state.amm.contract)
-
   const chart = useSelector(chartSelector)
 
   const dispatch = useDispatch()
@@ -36,7 +29,11 @@ const Charts = () => {
   }, [provider, amm, dispatch])
 
   return (
-    <div>
+    <div
+      style={{
+      backgroundColor: "white",
+      }}
+    >
 
       {provider && amm ? (
         <div>

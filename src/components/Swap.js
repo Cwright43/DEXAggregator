@@ -95,9 +95,17 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
     console.log(`Token 1 Account Balance: ${parseFloat(balances[0]).toFixed(2)}`)
     console.log(`Token 2 Account Balance: ${parseFloat(balances[1]).toFixed(2)}`)
     console.log(`Active AMM Address: ${amm.address}`)
+    console.log(`Token 1 Balance on Active DEX: ${token1}`)
+    console.log(`Token 2 Balance on Active DEX: ${token2}`)
     console.log(`Active Symbol (1): ${symbols}`)
     console.log(`DAPP / USD / APPL Protocol: ${protocol}`)
     console.log(`Uni / Sushi Protocol: ${dexProtocol}`)
+    console.log(`Price 1: ${price1}`)
+    console.log(`Price 2: ${price2}`)
+    console.log(`Price 3: ${price3}`)
+    console.log(`Price 4: ${price4}`)
+    console.log(`Price 5: ${price5}`)
+    console.log(`Price 6: ${price6}`)
 }
 
   const inputHandler = async (e) => {
@@ -136,7 +144,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
         setOutputAmount(_token2Amount.toString())
         setExchangeRate((_token2Amount/_token1Amount) * 10e17)
       }
-    } else if (inputToken === 'WETH' || outputToken === 'DAI') {
+      } else if (inputToken === 'WETH' || outputToken === 'DAI') {
       setInputAmount(e.target.value)
       const _token1Amount = ethers.utils.parseUnits(e.target.value, 'ether')
       if (dexProtocol === 1) {
@@ -251,7 +259,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   }
 
   if (inputToken === 'DAI' && outputToken === 'WETH') {
-    if ((poolDAI2 / poolWETH2) > (poolDAI / poolWETH)) {
+    if ((poolWETH2 / poolDAI2) > (poolWETH / poolDAI)) {
       console.log("SushiSwap WINS")
       setFlagSushiswap(true)
       setDexProtocol(2)
@@ -521,15 +529,7 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
           </p>
         )}
       </Card>
-      <p>
-                <Button 
-                  variant="primary" 
-                  style={{ width: '20%' }}
-                  onClick={() => testHandler()}
-                  >
-                  Show T1 / T2 Account Balances 
-                </Button>
-              </p>
+
       {isSwapping ? (
         <Alert
           message={'Swap Pending...'}
