@@ -311,7 +311,7 @@ function App() {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       width: '100vw',
-      height: '135vh'
+      height: '150vh'
       }}>
     <Container>
   

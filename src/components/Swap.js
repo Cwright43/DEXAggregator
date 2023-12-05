@@ -260,21 +260,17 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
 
   if (inputToken === 'DAI' && outputToken === 'WETH') {
     if ((poolWETH2 / poolDAI2) > (poolWETH / poolDAI)) {
-      console.log("SushiSwap WINS")
       setFlagSushiswap(true)
       setDexProtocol(2)
     } else {
-      console.log("UniSwap WINS")
       setFlagUniswap(true)
       setDexProtocol(1)
     }
 } else if (inputToken === 'WETH' && outputToken === 'DAI') {
     if ((poolDAI3 / poolWETH3) > (poolDAI1 / poolWETH1)) {
-      console.log("SushiSwap WINS")
       setFlagSushiswap(true)
       setDexProtocol(2)
     } else {
-      console.log("UniSwap WINS")
       setFlagUniswap(true)
       setDexProtocol(1)
     }
@@ -283,21 +279,17 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   if (inputToken === 'DAPP' && outputToken === 'USD') {
         if (price2 > price1) {
           await loadAppleDappUSD(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappDappUSD(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
   } else if (inputToken === 'USD' && outputToken === 'DAPP') {
         if (price1 > price2) {
           await loadAppleDappUSD(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappDappUSD(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
      }
@@ -305,21 +297,17 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   if (inputToken === 'APPL' && outputToken === 'USD') {
         if (price4 > price3) {
           await loadAppleAppleUSD(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappAppleUSD(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
       } else if (inputToken === 'USD' && outputToken === 'APPL') {
         if (price3 > price4) {
           await loadAppleAppleUSD(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappAppleUSD(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
       }
@@ -327,21 +315,17 @@ const Swap = ({ dappAccountBalance, usdAccountBalance, appleAccountBalance,
   if (inputToken === 'DAPP' && outputToken === 'APPL') {
         if (price6 > price5) {
           await loadAppleDappApple(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappDappApple(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
       } else if (inputToken === 'APPL' && outputToken === 'DAPP') {
         if (price5 > price6) {
           await loadAppleDappApple(provider, chainId, dispatch)
-          console.log("AppleSwap WINS")
           setFlagApple(true)
         } else {
           await loadDappDappApple(provider, chainId, dispatch)
-          console.log("DappSwap WINS")
           setFlagDapp(true)
         }
       }
